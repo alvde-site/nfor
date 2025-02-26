@@ -34,20 +34,20 @@ export function formatDate(d: string) {
 export function formatTextDate(date: string) {
   const curDate = new Date(date);
   const months = [
-    'Января',
-    'Февраля',
-    'Марта',
-    'Апреля',
-    'Мая',
-    'Июня',
-    'Июля',
-    'Августа',
-    'Сентября',
-    'Октября',
-    'Ноября',
-    'Декабря',
+    'января',
+    'февраля',
+    'марта',
+    'апреля',
+    'мая',
+    'июня',
+    'июля',
+    'августа',
+    'сентября',
+    'октября',
+    'ноября',
+    'декабря',
   ];
   return months[curDate.getMonth()]
-    ? `Занятость действительна на ${curDate.getDate()} ${months[curDate.getMonth()]} ${curDate.getFullYear()}г.`
+    ? `Занятость действительна c 1 ${months[8]} 2024 года по ${curDate.getDate()} ${months[curDate.getMonth()]} ${curDate.getFullYear()} года (дата последнего концерта).`
     : '';
 }

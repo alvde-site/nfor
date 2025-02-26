@@ -1,5 +1,14 @@
+import type { Dayjs } from 'dayjs';
+
+import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
+import { useCookies } from 'react-cookie';
+// import { AnalyticsNews } from '../analytics-news';
+import timezone from 'dayjs/plugin/timezone';
 import { useState, useEffect, useCallback } from 'react';
 
+// import { AnalyticsTasks } from '../analytics-tasks';
+import { Button } from '@mui/material';
 import Grid from '@mui/material/Unstable_Grid2';
 import Typography from '@mui/material/Typography';
 
@@ -11,9 +20,7 @@ import { formatDate, formatTextDate } from 'src/utils/format-date';
 // import { _tasks, _posts, _timeline } from 'src/_mock';
 import { DashboardContent } from 'src/layouts/dashboard';
 
-// import { AnalyticsNews } from '../analytics-news';
-// import { AnalyticsTasks } from '../analytics-tasks';
-import { Button } from '@mui/material';
+import DatePickerValue from 'src/components/input/DatePickerValue';
 
 import { AnalyticsCurrentVisits } from '../analytics-current-visits';
 // import { AnalyticsOrderTimeline } from '../analytics-order-timeline';
@@ -23,8 +30,6 @@ import { AnalyticsCurrentVisits } from '../analytics-current-visits';
 // import { AnalyticsCurrentSubject } from '../analytics-current-subject';
 // import { AnalyticsConversionRates } from '../analytics-conversion-rates';
 
-// ----------------------------------------------------------------------
-type TInitData = [][];
 type TEmpList =
   | {}
   | {
@@ -37,23 +42,30 @@ type TSetBusy = {
   empName: string;
 };
 
+dayjs.extend(utc);
+dayjs.extend(timezone);
+
 export function OverviewAnalyticsView() {
-  const [initData, setInitData] = useState<TInitData>([]);
-  console.log('initData', initData); // initData not used
+  const [cookies, setCookie] = useCookies(['isSubmit']);
   const [employeeList, setEmployeeList] = useState<TEmpList>({});
   const [lastConcertDate, setLastConcertDate] = useState('');
+  const [dateValue, setDateValue] = useState<Dayjs | null>(dayjs());
 
-  const getLastConcertDate = (arr: string[][]) => {
-    const lastItem = arr[arr.length - 1];
-    const lastDatesItem = lastItem[3];
-    return lastDatesItem[lastDatesItem.length - 1];
-  };
-
-  const handleUpdate = useCallback((event: React.MouseEvent<HTMLButtonElement>) => {
-    localStorage.removeItem('data');
+  const handleUpdate = useCallback(() => {
     localStorage.removeItem('initData');
     window.location.reload();
   }, []);
+
+  const handleCookie = useCallback(() => {
+    setCookie('isSubmit', true, { maxAge: 3600 * 24 * 7 });
+    localStorage.removeItem('initData');
+  }, [setCookie]);
+
+  useEffect(() => {
+    if (!cookies.isSubmit) {
+      window.addEventListener('beforeunload', handleCookie);
+    }
+  }, [cookies.isSubmit, handleCookie]);
 
   useEffect(() => {
     const workers = ['dem', 'zen', 'bak', 'kli'];
@@ -77,7 +89,7 @@ export function OverviewAnalyticsView() {
       return empSingle;
     }
 
-    function handleEmpList(sheetData: [][]) {
+    function createEmployeeList(sheetData: [][]) {
       workers.forEach((w) => {
         setSingleBusy({ gData: sheetData, empName: w });
       });
@@ -85,35 +97,45 @@ export function OverviewAnalyticsView() {
     }
 
     function checkData() {
-      if (!localStorage.getItem('data')) {
+      if (!localStorage.getItem('initData')) {
         NforBdApiSet.getBdData()
           .then((res) => res.json())
           .then((res) => {
-            setInitData(res);
             const formattedData = res.map((e: [], i: number) =>
               i ? e.map((el, idx) => (idx === 2 || idx === 3 ? formatDate(el) : el)) : e
             );
             localStorage.setItem('initData', JSON.stringify(formattedData));
-            const sortedData = sortData(formattedData);
-            localStorage.setItem('data', JSON.stringify(sortedData));
-            setLastConcertDate(getLastConcertDate(sortedData));
-            handleEmpList(sortedData);
+            const lastConcert = formattedData
+              .map((e: string[][], i: number) => (i ? e[2][e[2].length - 1] : [0]))
+              .reverse()
+              .find((d: string) => new Date() >= new Date(d));
+            const sortedData = sortData(formattedData, dateValue);
+            setLastConcertDate(lastConcert);
+            createEmployeeList(sortedData);
           });
       } else {
-        const localData = JSON.parse(localStorage.getItem('data')!);
-        const sortedData = sortData(localData);
-        setLastConcertDate(getLastConcertDate(sortedData));
-        handleEmpList(sortedData);
+        const localData = JSON.parse(localStorage.getItem('initData')!);
+        const sortedData = sortData(localData, dayjs(dateValue));
+        const lastConcert = localData
+          .map((e: string[][], i: number) => (i ? e[2][e[2].length - 1] : [0]))
+          .reverse()
+          .find((d: string) => dayjs(dateValue) >= dayjs(d));
+        setLastConcertDate(lastConcert);
+        createEmployeeList(sortedData);
       }
     }
     checkData();
-  }, []);
+  }, [dateValue]);
 
   return (
     <DashboardContent maxWidth="xl">
-      <Typography variant="h4" sx={{ mb: { xs: 3, md: 5 } }}>
-        {`Привет, с возвращением 👋! ${formatTextDate(lastConcertDate)}`}
-      </Typography>
+      <Typography variant="h4">Привет, с возвращением 👋!</Typography>
+      <Typography
+        variant="subtitle1"
+        sx={{ mb: { xs: 3, md: 5 } }}
+        gutterBottom
+      >{`${formatTextDate(lastConcertDate)}`}</Typography>
+      <DatePickerValue value={dateValue} setValue={setDateValue} />
 
       <Grid container spacing={3}>
         {/* <Grid xs={12} sm={6} md={3}>

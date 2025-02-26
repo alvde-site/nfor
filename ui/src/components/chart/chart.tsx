@@ -26,7 +26,6 @@ export function Chart({
   useEffect(() => {
     setIsLoading(series?.every((e) => !e));
   }, [isLoading, series]);
-  console.log('render');
   return (
     <Box
       dir="ltr"
