@@ -2,6 +2,7 @@ import type { Dayjs } from 'dayjs';
 import type { Dispatch, SetStateAction } from 'react';
 
 import 'dayjs/locale/ru';
+import dayjs from 'dayjs';
 
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
@@ -31,6 +32,8 @@ export default function DatePickerValue({
           slotProps={{
             toolbar: { hidden: true },
           }}
+          minDate={dayjs('2024-09-14')}
+          maxDate={dayjs('2025-07-31')}
         />
       </DemoContainer>
     </LocalizationProvider>
