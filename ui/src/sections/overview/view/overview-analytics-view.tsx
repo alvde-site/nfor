@@ -169,7 +169,12 @@ export function OverviewAnalyticsView() {
             const sortedData = sortData(formattedData, dateValue);
             setLastConcertDate(lastConcert);
             createEmployeeList(sortedData);
-            setConcertList(createConcertList(formattedData));
+            const conList = createConcertList(formattedData);
+            const featureConList = conList.filter(
+              (e) =>
+                dayjs(dateValue).startOf('day') <= dayjs(e.concertDate[e.concertDate.length - 1])
+            );
+            setConcertList(featureConList);
           });
       } else {
         const localData = JSON.parse(localStorage.getItem('initData')!);
