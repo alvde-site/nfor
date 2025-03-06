@@ -57,6 +57,11 @@ export function AnalyticsCurrentVisits({ title, subheader, chart, ...other }: Pr
         formatter: (value: number) => fNumber(value),
         title: { formatter: (seriesName: string) => `${seriesName}` },
       },
+      fixed: {
+        enabled: true,
+        offsetX: -50,
+        offsetY: -50,
+      },
     },
     plotOptions: { pie: { donut: { labels: { show: false } } } },
     ...chart.options,

@@ -3,7 +3,7 @@ import type { CardProps } from '@mui/material/Card';
 
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
-import Button from '@mui/material/Button';
+// import Button from '@mui/material/Button';
 import Avatar from '@mui/material/Avatar';
 import CardHeader from '@mui/material/CardHeader';
 import ListItemText from '@mui/material/ListItemText';
@@ -11,11 +11,16 @@ import ListItemText from '@mui/material/ListItemText';
 // import { fToNow } from 'src/utils/format-time';
 
 import dayjs from 'dayjs';
+import { useState } from 'react';
 
+// import type { PostItemProps } from '../blog/post-item';
+import { Collapse, IconButton } from '@mui/material';
+// import AnnouncementIcon from '@mui/icons-material/Announcement';
+
+import { Label } from 'src/components/label';
 import { Iconify } from 'src/components/iconify';
 import { Scrollbar } from 'src/components/scrollbar';
 
-// import type { PostItemProps } from '../blog/post-item';
 import type { ConcertItemProps } from '../concert/concert-item';
 
 // ----------------------------------------------------------------------
@@ -31,8 +36,8 @@ export function AnalyticsNews({ title, subheader, list, ...other }: Props) {
     <Card {...other}>
       <CardHeader title={title} subheader={subheader} sx={{ mb: 1 }} />
 
-      <Scrollbar sx={{ minHeight: 405 }}>
-        <Box sx={{ minWidth: 640 }}>
+      <Scrollbar>
+        <Box sx={{ minWidth: 744 }}>
           {list.map((post) => (
             <PostItem key={post.id} item={post} />
           ))}
@@ -55,37 +60,77 @@ export function AnalyticsNews({ title, subheader, list, ...other }: Props) {
 // ----------------------------------------------------------------------
 
 function PostItem({ sx, item, ...other }: BoxProps & { item: Props['list'][number] }) {
+  const [open, setOpen] = useState(false);
+
+  const handleClick = () => {
+    setOpen(!open);
+  };
   return (
-    <Box
-      sx={{
-        py: 2,
-        px: 3,
-        gap: 2,
-        display: 'flex',
-        alignItems: 'center',
-        borderBottom: (theme) => `dashed 1px ${theme.vars.palette.divider}`,
-        ...sx,
-      }}
-      {...other}
-    >
-      <Avatar
-        variant="rounded"
-        alt={item.title}
-        src={item.coverUrl}
-        sx={{ width: 48, height: 48, flexShrink: 0 }}
-      />
+    <Box>
+      <Box
+        sx={{
+          py: 2,
+          px: 3,
+          gap: 2,
+          display: 'flex',
+          alignItems: 'center',
+          borderBottom: (theme) => `dashed 1px ${theme.vars.palette.divider}`,
+          ...sx,
+        }}
+        {...other}
+        onClick={handleClick}
+      >
+        <Avatar
+          variant="rounded"
+          alt={item.title}
+          src={item.coverUrl}
+          sx={{ width: 48, height: 48, flexShrink: 0 }}
+        />
+        <Box sx={{ minWidth: 38, flexShrink: 0, color: 'text.disabled', typography: 'caption' }}>
+          <IconButton aria-label="Сообщение">
+            {item.comments !== 'null' && (
+              <Iconify width={22} icon="ic:baseline-announcement" sx={{ color: 'info.main' }} />
+            )}
+          </IconButton>
+        </Box>
 
-      <ListItemText
-        primary={item.title}
-        secondary={item.description}
-        primaryTypographyProps={{ noWrap: true, typography: 'subtitle2' }}
-        secondaryTypographyProps={{ mt: 0.5, noWrap: true, component: 'span' }}
-      />
+        <ListItemText
+          primary={item.title}
+          secondary={item.description}
+          primaryTypographyProps={{ noWrap: true, typography: 'subtitle2' }}
+          secondaryTypographyProps={{ mt: 0.5, noWrap: true, component: 'span' }}
+          sx={{ flex: '1 0 auto' }}
+        />
 
-      <Box sx={{ flexShrink: 0, color: 'text.disabled', typography: 'caption' }}>
-        {/* {fToNow(item.concertDate)} */}
-        {item.concertDate.map((e) => dayjs(e).format('D.MM.YYYY')).join(' - ')}
+        <Box sx={{ flexShrink: 0, color: 'text.disabled', typography: 'caption' }}>
+          <Label color={(item.approved && 'success') || 'error'}>
+            {item.approved ? 'Утверждено' : 'Прогноз'}
+          </Label>
+        </Box>
+
+        <Box sx={{ flexShrink: 0, color: 'text.disabled', typography: 'caption' }}>
+          {/* {fToNow(item.concertDate)} */}
+          {item.concertDate.map((e) => dayjs(e).format('D.MM.YYYY')).join(' - ')}
+        </Box>
       </Box>
+      {item.comments !== 'null' && (
+        <Collapse in={open} timeout="auto" unmountOnExit>
+          <Box
+            sx={{
+              py: 2,
+              px: 3,
+              gap: 2,
+              display: 'flex',
+              alignItems: 'center',
+              borderBottom: (theme) => `dashed 1px ${theme.vars.palette.divider}`,
+              ...sx,
+            }}
+            {...other}
+          >
+            {item.comments}
+          </Box>
+        </Collapse>
+      )}
     </Box>
   );
 }

@@ -14,4 +14,6 @@ export type ConcertItemProps = {
   //   name: string;
   //   avatarUrl: string;
   // };
+  comments: string;
+  approved: boolean;
 };

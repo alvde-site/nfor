@@ -19,10 +19,11 @@ import { generateColNames } from 'src/utils/generate-colnames';
 import { formatDate, formatTextDate } from 'src/utils/format-date';
 
 import { DashboardContent } from 'src/layouts/dashboard';
-import {} from // _tasks,
+// import {} from
+// _tasks,
 // _posts,
 // _timeline
-'src/_mock';
+// 'src/_mock';
 
 import DatePickerValue from 'src/components/input/DatePickerValue';
 
@@ -50,6 +51,8 @@ type TInitDataItem = [
   RKli: number,
   CTotal: number,
   RTotal: number,
+  Comments: string,
+  Approved: boolean,
 ];
 
 type TEmpList =
@@ -150,6 +153,8 @@ export function OverviewAnalyticsView() {
         description: `Состав: ${handleEpmList(e).join(', ')}`,
         concertDate:
           e[2].length > 1 ? [dayjs(e[2][0]), dayjs(e[2][e[2].length - 1])] : [dayjs(e[2])],
+        comments: e[14],
+        approved: e[15],
       }));
     }
 
@@ -158,6 +163,7 @@ export function OverviewAnalyticsView() {
         NforBdApiSet.getBdData()
           .then((res) => res.json())
           .then((res) => {
+            console.log(res);
             const formattedData = res.map((e: [], i: number) =>
               i ? e.map((el, idx) => (idx === 2 || idx === 3 ? formatDate(el) : el)) : e
             );
@@ -169,10 +175,16 @@ export function OverviewAnalyticsView() {
             const sortedData = sortData(formattedData, dateValue);
             setLastConcertDate(lastConcert);
             createEmployeeList(sortedData);
-            setConcertList(createConcertList(formattedData));
+            const conList = createConcertList(formattedData);
+            const featureConList = conList.filter(
+              (e) =>
+                dayjs(dateValue).startOf('day') <= dayjs(e.concertDate[e.concertDate.length - 1])
+            );
+            setConcertList(featureConList);
           });
       } else {
         const localData = JSON.parse(localStorage.getItem('initData')!);
+
         const sortedData = sortData(localData, dayjs(dateValue));
         const lastConcert = localData
           .map((e: string[][], i: number) => (i ? e[2][e[2].length - 1] : [0]))
@@ -254,7 +266,7 @@ export function OverviewAnalyticsView() {
           />
         </Grid> */}
 
-        <Grid xs={12} md={6} lg={4}>
+        <Grid xs={12} md={12} lg={4}>
           <AnalyticsCurrentVisits
             title="Общее количество вызовов"
             chart={{
@@ -339,7 +351,12 @@ export function OverviewAnalyticsView() {
         </Grid> */}
 
         <Grid xs={12}>
-          <AnalyticsNews title="Концерты" list={conсertList.slice(0, 5)} />
+          <AnalyticsNews
+            title={
+              conсertList.slice(0, 5).length ? 'Концерты' : 'В этом сезоне больше нет концертов'
+            }
+            list={conсertList.slice(0, 5)}
+          />
         </Grid>
 
         {/* <Grid xs={12} md={6} lg={4}>
