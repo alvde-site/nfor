@@ -8,19 +8,22 @@ import Avatar from '@mui/material/Avatar';
 import CardHeader from '@mui/material/CardHeader';
 import ListItemText from '@mui/material/ListItemText';
 
-import { fToNow } from 'src/utils/format-time';
+// import { fToNow } from 'src/utils/format-time';
+
+import dayjs from 'dayjs';
 
 import { Iconify } from 'src/components/iconify';
 import { Scrollbar } from 'src/components/scrollbar';
 
-import type { PostItemProps } from '../blog/post-item';
+// import type { PostItemProps } from '../blog/post-item';
+import type { ConcertItemProps } from '../concert/concert-item';
 
 // ----------------------------------------------------------------------
 
 type Props = CardProps & {
   title?: string;
   subheader?: string;
-  list: PostItemProps[];
+  list: ConcertItemProps[];
 };
 
 export function AnalyticsNews({ title, subheader, list, ...other }: Props) {
@@ -36,15 +39,15 @@ export function AnalyticsNews({ title, subheader, list, ...other }: Props) {
         </Box>
       </Scrollbar>
 
-      <Box sx={{ p: 2, textAlign: 'right' }}>
+      {/* <Box sx={{ p: 2, textAlign: 'right' }}>
         <Button
           size="small"
           color="inherit"
           endIcon={<Iconify icon="eva:arrow-ios-forward-fill" width={18} sx={{ ml: -0.5 }} />}
         >
-          View all
+          Все концерты
         </Button>
-      </Box>
+      </Box> */}
     </Card>
   );
 }
@@ -80,7 +83,8 @@ function PostItem({ sx, item, ...other }: BoxProps & { item: Props['list'][numbe
       />
 
       <Box sx={{ flexShrink: 0, color: 'text.disabled', typography: 'caption' }}>
-        {fToNow(item.postedAt)}
+        {/* {fToNow(item.concertDate)} */}
+        {item.concertDate.map((e) => dayjs(e).format('D.MM.YYYY')).join(' - ')}
       </Box>
     </Box>
   );

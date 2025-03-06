@@ -1,9 +1,9 @@
 import type { Dayjs } from 'dayjs';
+import type { ConcertItemProps } from 'src/sections/concert/concert-item';
 
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import { useCookies } from 'react-cookie';
-// import { AnalyticsNews } from '../analytics-news';
 import timezone from 'dayjs/plugin/timezone';
 import { useState, useEffect, useCallback } from 'react';
 
@@ -12,16 +12,21 @@ import { Button } from '@mui/material';
 import Grid from '@mui/material/Unstable_Grid2';
 import Typography from '@mui/material/Typography';
 
+import { users } from 'src/utils/users';
 import { NforBdApiSet } from 'src/utils/NforBdApi';
 import { sortData } from 'src/utils/sort-employee-list';
 import { generateColNames } from 'src/utils/generate-colnames';
 import { formatDate, formatTextDate } from 'src/utils/format-date';
 
-// import { _tasks, _posts, _timeline } from 'src/_mock';
 import { DashboardContent } from 'src/layouts/dashboard';
+import {} from // _tasks,
+// _posts,
+// _timeline
+'src/_mock';
 
 import DatePickerValue from 'src/components/input/DatePickerValue';
 
+import { AnalyticsNews } from '../analytics-news';
 import { AnalyticsCurrentVisits } from '../analytics-current-visits';
 // import { AnalyticsOrderTimeline } from '../analytics-order-timeline';
 // import { AnalyticsWebsiteVisits } from '../analytics-website-visits';
@@ -29,6 +34,23 @@ import { AnalyticsCurrentVisits } from '../analytics-current-visits';
 // import { AnalyticsTrafficBySite } from '../analytics-traffic-by-site';
 // import { AnalyticsCurrentSubject } from '../analytics-current-subject';
 // import { AnalyticsConversionRates } from '../analytics-conversion-rates';
+
+type TInitDataItem = [
+  id: number,
+  CName: string,
+  CDate: string,
+  RDate: string,
+  CDem: number,
+  RDem: number,
+  CZen: number,
+  RZen: number,
+  CBak: number,
+  RBak: number,
+  CKli: number,
+  RKli: number,
+  CTotal: number,
+  RTotal: number,
+];
 
 type TEmpList =
   | {}
@@ -50,6 +72,7 @@ export function OverviewAnalyticsView() {
   const [employeeList, setEmployeeList] = useState<TEmpList>({});
   const [lastConcertDate, setLastConcertDate] = useState('');
   const [dateValue, setDateValue] = useState<Dayjs | null>(dayjs());
+  const [conсertList, setConcertList] = useState<ConcertItemProps[]>([]);
 
   const handleUpdate = useCallback(() => {
     localStorage.removeItem('initData');
@@ -96,6 +119,40 @@ export function OverviewAnalyticsView() {
       setEmployeeList(empList);
     }
 
+    function handleEpmList(c: TInitDataItem) {
+      const res: string[] = [];
+      for (let i = 0; i <= c.length; i += 1) {
+        switch (i) {
+          case 4:
+            if (c[i]) res.push(users[0]);
+            break;
+          case 6:
+            if (c[i]) res.push(users[1]);
+            break;
+          case 8:
+            if (c[i]) res.push(users[2]);
+            break;
+          case 10:
+            if (c[i]) res.push(users[3]);
+            break;
+          default:
+            res.push('');
+        }
+      }
+      return res.filter((i) => i.length);
+    }
+
+    function createConcertList(sheetData: TInitDataItem[]) {
+      return sheetData.map((e) => ({
+        id: e[0],
+        title: e[1],
+        coverUrl: `/assets/images/cover/cover-${Math.floor(1 + Math.random() * (24 - 1))}.webp`,
+        description: `Состав: ${handleEpmList(e).join(', ')}`,
+        concertDate:
+          e[2].length > 1 ? [dayjs(e[2][0]), dayjs(e[2][e[2].length - 1])] : [dayjs(e[2])],
+      }));
+    }
+
     function checkData() {
       if (!localStorage.getItem('initData')) {
         NforBdApiSet.getBdData()
@@ -112,6 +169,7 @@ export function OverviewAnalyticsView() {
             const sortedData = sortData(formattedData, dateValue);
             setLastConcertDate(lastConcert);
             createEmployeeList(sortedData);
+            setConcertList(createConcertList(formattedData));
           });
       } else {
         const localData = JSON.parse(localStorage.getItem('initData')!);
@@ -122,6 +180,11 @@ export function OverviewAnalyticsView() {
           .find((d: string) => dayjs(dateValue) >= dayjs(d));
         setLastConcertDate(lastConcert);
         createEmployeeList(sortedData);
+        const conList = createConcertList(localData);
+        const featureConList = conList.filter(
+          (e) => dayjs(dateValue).startOf('day') <= dayjs(e.concertDate[e.concertDate.length - 1])
+        );
+        setConcertList(featureConList);
       }
     }
     checkData();
@@ -129,11 +192,9 @@ export function OverviewAnalyticsView() {
 
   return (
     <DashboardContent maxWidth="xl">
-      <Typography variant="h4">Привет, с возвращением 👋!</Typography>
       <Typography
-        variant="subtitle1"
+        variant="h4"
         sx={{ mb: { xs: 3, md: 5 } }}
-        gutterBottom
       >{`${formatTextDate(lastConcertDate)}`}</Typography>
       <DatePickerValue value={dateValue} setValue={setDateValue} />
 
@@ -275,13 +336,13 @@ export function OverviewAnalyticsView() {
               ],
             }}
           />
+        </Grid> */}
+
+        <Grid xs={12}>
+          <AnalyticsNews title="Концерты" list={conсertList.slice(0, 5)} />
         </Grid>
 
-        <Grid xs={12} md={6} lg={8}>
-          <AnalyticsNews title="News" list={_posts.slice(0, 5)} />
-        </Grid>
-
-        <Grid xs={12} md={6} lg={4}>
+        {/* <Grid xs={12} md={6} lg={4}>
           <AnalyticsOrderTimeline title="Order timeline" list={_timeline} />
         </Grid>
 

@@ -3,15 +3,15 @@ import type { CardProps } from '@mui/material/Card';
 import Box from '@mui/material/Box';
 import Link from '@mui/material/Link';
 import Card from '@mui/material/Card';
-import Avatar from '@mui/material/Avatar';
+// import Avatar from '@mui/material/Avatar';
 import Typography from '@mui/material/Typography';
 
 import { fDate } from 'src/utils/format-time';
-import { fShortenNumber } from 'src/utils/format-number';
+// import { fShortenNumber } from 'src/utils/format-number';
 
 import { varAlpha } from 'src/theme/styles';
 
-import { Iconify } from 'src/components/iconify';
+// import { Iconify } from 'src/components/iconify';
 import { SvgColor } from 'src/components/svg-color';
 
 // ----------------------------------------------------------------------
@@ -20,16 +20,16 @@ export type PostItemProps = {
   id: string;
   title: string;
   coverUrl: string;
-  totalViews: number;
+  // totalViews: number;
   description: string;
-  totalShares: number;
-  totalComments: number;
-  totalFavorites: number;
+  // totalShares: number;
+  // totalComments: number;
+  // totalFavorites: number;
   postedAt: string | number | null;
-  author: {
-    name: string;
-    avatarUrl: string;
-  };
+  // author: {
+  //   name: string;
+  //   avatarUrl: string;
+  // };
 };
 
 export function PostItem({
@@ -43,21 +43,21 @@ export function PostItem({
   latestPost: boolean;
   latestPostLarge: boolean;
 }) {
-  const renderAvatar = (
-    <Avatar
-      alt={post.author.name}
-      src={post.author.avatarUrl}
-      sx={{
-        left: 24,
-        zIndex: 9,
-        bottom: -24,
-        position: 'absolute',
-        ...((latestPostLarge || latestPost) && {
-          top: 24,
-        }),
-      }}
-    />
-  );
+  // const renderAvatar = (
+  //   <Avatar
+  //     alt={post.author.name}
+  //     src={post.author.avatarUrl}
+  //     sx={{
+  //       left: 24,
+  //       zIndex: 9,
+  //       bottom: -24,
+  //       position: 'absolute',
+  //       ...((latestPostLarge || latestPost) && {
+  //         top: 24,
+  //       }),
+  //     }}
+  //   />
+  // );
 
   const renderTitle = (
     <Link
@@ -91,7 +91,7 @@ export function PostItem({
         color: 'text.disabled',
       }}
     >
-      {[
+      {/* {[
         { number: post.totalComments, icon: 'solar:chat-round-dots-bold' },
         { number: post.totalViews, icon: 'solar:eye-bold' },
         { number: post.totalShares, icon: 'solar:share-bold' },
@@ -109,7 +109,7 @@ export function PostItem({
           <Iconify width={16} icon={info.icon} sx={{ mr: 0.5 }} />
           <Typography variant="caption">{fShortenNumber(info.number)}</Typography>
         </Box>
-      ))}
+      ))} */}
     </Box>
   );
 
@@ -187,7 +187,7 @@ export function PostItem({
         })}
       >
         {renderShape}
-        {renderAvatar}
+        {/* {renderAvatar} */}
         {renderCover}
       </Box>
 
