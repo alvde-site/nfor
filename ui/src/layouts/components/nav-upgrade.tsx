@@ -1,14 +1,21 @@
 import type { StackProps } from '@mui/material/Stack';
 
+import { useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
+
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
-import Typography from '@mui/material/Typography';
-
-import { textGradient } from 'src/theme/styles';
 
 // ----------------------------------------------------------------------
 
 export function NavUpgrade({ sx, ...other }: StackProps) {
+  const navigate = useNavigate();
+  const handleUpdate = useCallback(() => {
+    navigate('/');
+    localStorage.removeItem('initData');
+    window.location.reload();
+  }, [navigate]);
+
   return (
     <Box
       display="flex"
@@ -17,7 +24,7 @@ export function NavUpgrade({ sx, ...other }: StackProps) {
       sx={{ mb: 4, textAlign: 'center', ...sx }}
       {...other}
     >
-      <Typography
+      {/* <Typography
         variant="h6"
         sx={(theme) => ({
           ...textGradient(
@@ -39,15 +46,24 @@ export function NavUpgrade({ sx, ...other }: StackProps) {
         alt="Minimal dashboard"
         src="/assets/illustrations/illustration-dashboard.webp"
         sx={{ width: 200, my: 2 }}
-      />
+      /> */}
 
-      <Button
+      {/* <Button
         href="https://material-ui.com/store/items/minimal-dashboard/"
         target="_blank"
         variant="contained"
         color="inherit"
       >
         Upgrade to Pro
+      </Button> */}
+      <Button
+        // href="https://material-ui.com/store/items/minimal-dashboard/"
+        // target="_blank"
+        onClick={handleUpdate}
+        variant="contained"
+        color="inherit"
+      >
+        Обновить данные
       </Button>
     </Box>
   );

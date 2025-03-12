@@ -3,7 +3,7 @@ import type { AppBarProps } from '@mui/material/AppBar';
 import type { ToolbarProps } from '@mui/material/Toolbar';
 import type { ContainerProps } from '@mui/material/Container';
 
-// import Box from '@mui/material/Box';
+import Box from '@mui/material/Box';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import Container from '@mui/material/Container';
@@ -88,13 +88,13 @@ export function HeaderSection({
             ...slotProps?.container?.sx,
           }}
         >
-          {/* {slots?.leftArea}
+          {slots?.leftArea}
 
           <Box sx={{ display: 'flex', flex: '1 1 auto', justifyContent: 'center' }}>
             {slots?.centerArea}
           </Box>
 
-          {slots?.rightArea} */}
+          {slots?.rightArea}
         </Container>
       </Toolbar>
 

@@ -1,5 +1,4 @@
 import type { Dayjs } from 'dayjs';
-import type { ConcertItemProps } from 'src/sections/concert/concert-item';
 
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
@@ -8,17 +7,18 @@ import timezone from 'dayjs/plugin/timezone';
 import { useState, useEffect, useCallback } from 'react';
 
 // import { AnalyticsTasks } from '../analytics-tasks';
-import { Button } from '@mui/material';
+// import { Button } from '@mui/material';
 import Grid from '@mui/material/Unstable_Grid2';
 import Typography from '@mui/material/Typography';
 
-import { users } from 'src/utils/users';
 import { NforBdApiSet } from 'src/utils/NforBdApi';
 import { sortData } from 'src/utils/sort-employee-list';
 import { generateColNames } from 'src/utils/generate-colnames';
 import { formatDate, formatTextDate } from 'src/utils/format-date';
 
 import { DashboardContent } from 'src/layouts/dashboard';
+
+import { createConcertList, type ConcertItemProps } from 'src/sections/concert/utils';
 // import {} from
 // _tasks,
 // _posts,
@@ -35,25 +35,6 @@ import { AnalyticsCurrentVisits } from '../analytics-current-visits';
 // import { AnalyticsTrafficBySite } from '../analytics-traffic-by-site';
 // import { AnalyticsCurrentSubject } from '../analytics-current-subject';
 // import { AnalyticsConversionRates } from '../analytics-conversion-rates';
-
-type TInitDataItem = [
-  id: number,
-  CName: string,
-  CDate: string,
-  RDate: string,
-  CDem: number,
-  RDem: number,
-  CZen: number,
-  RZen: number,
-  CBak: number,
-  RBak: number,
-  CKli: number,
-  RKli: number,
-  CTotal: number,
-  RTotal: number,
-  Comments: string,
-  Approved: boolean,
-];
 
 type TEmpList =
   | {}
@@ -77,10 +58,10 @@ export function OverviewAnalyticsView() {
   const [dateValue, setDateValue] = useState<Dayjs | null>(dayjs());
   const [conсertList, setConcertList] = useState<ConcertItemProps[]>([]);
 
-  const handleUpdate = useCallback(() => {
-    localStorage.removeItem('initData');
-    window.location.reload();
-  }, []);
+  // const handleUpdate = useCallback(() => {
+  //   localStorage.removeItem('initData');
+  //   window.location.reload();
+  // }, []);
 
   const handleCookie = useCallback(() => {
     setCookie('isSubmit', true, { maxAge: 3600 * 24 * 7 });
@@ -122,48 +103,11 @@ export function OverviewAnalyticsView() {
       setEmployeeList(empList);
     }
 
-    function handleEpmList(c: TInitDataItem) {
-      const res: string[] = [];
-      for (let i = 0; i <= c.length; i += 1) {
-        switch (i) {
-          case 4:
-            if (c[i]) res.push(users[0]);
-            break;
-          case 6:
-            if (c[i]) res.push(users[1]);
-            break;
-          case 8:
-            if (c[i]) res.push(users[2]);
-            break;
-          case 10:
-            if (c[i]) res.push(users[3]);
-            break;
-          default:
-            res.push('');
-        }
-      }
-      return res.filter((i) => i.length);
-    }
-
-    function createConcertList(sheetData: TInitDataItem[]) {
-      return sheetData.map((e) => ({
-        id: e[0],
-        title: e[1],
-        coverUrl: `/assets/images/cover/cover-${Math.floor(1 + Math.random() * (24 - 1))}.webp`,
-        description: `Состав: ${handleEpmList(e).join(', ')}`,
-        concertDate:
-          e[2].length > 1 ? [dayjs(e[2][0]), dayjs(e[2][e[2].length - 1])] : [dayjs(e[2])],
-        comments: e[14],
-        approved: e[15],
-      }));
-    }
-
     function checkData() {
       if (!localStorage.getItem('initData')) {
         NforBdApiSet.getBdData()
           .then((res) => res.json())
           .then((res) => {
-            console.log(res);
             const formattedData = res.map((e: [], i: number) =>
               i ? e.map((el, idx) => (idx === 2 || idx === 3 ? formatDate(el) : el)) : e
             );
@@ -176,10 +120,12 @@ export function OverviewAnalyticsView() {
             setLastConcertDate(lastConcert);
             createEmployeeList(sortedData);
             const conList = createConcertList(formattedData);
+
             const featureConList = conList.filter(
               (e) =>
                 dayjs(dateValue).startOf('day') <= dayjs(e.concertDate[e.concertDate.length - 1])
             );
+
             setConcertList(featureConList);
           });
       } else {
@@ -380,7 +326,7 @@ export function OverviewAnalyticsView() {
         </Grid> */}
       </Grid>
 
-      <Button
+      {/* <Button
         variant="contained"
         onClick={handleUpdate}
         sx={{
@@ -390,7 +336,7 @@ export function OverviewAnalyticsView() {
         }}
       >
         Обновить
-      </Button>
+      </Button> */}
     </DashboardContent>
   );
 }

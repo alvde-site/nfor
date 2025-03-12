@@ -1,3 +1,5 @@
+import dayjs from 'dayjs';
+
 export function formatDate(d: string) {
   let result = '';
   const res: string[] = [];
@@ -51,3 +53,9 @@ export function formatTextDate(date: string) {
     ? `Занятость действительна c 1 ${months[8]} 2024 года по ${curDate.getDate()} ${months[curDate.getMonth()]} ${curDate.getFullYear()} года (дата последнего концерта).`
     : '';
 }
+
+export const dateToRange = (dates: string | string[]) => {
+  const datejsArr =
+    dates.length > 1 ? [dayjs(dates[0]), dayjs(dates[dates.length - 1])] : [dayjs(dates[0])];
+  return datejsArr.map((e) => dayjs(e).format('D.MM.YYYY')).join(' - ');
+};

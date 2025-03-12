@@ -11,6 +11,7 @@ import { layoutClasses } from 'src/layouts/classes';
 // ----------------------------------------------------------------------
 
 export function Main({ children, sx, ...other }: BoxProps) {
+  // console.log(useTheme());
   return (
     <Box
       component="main"

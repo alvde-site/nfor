@@ -3,25 +3,28 @@ import type { CardProps } from '@mui/material/Card';
 
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
-// import Button from '@mui/material/Button';
+import Button from '@mui/material/Button';
 import Avatar from '@mui/material/Avatar';
 import CardHeader from '@mui/material/CardHeader';
 import ListItemText from '@mui/material/ListItemText';
 
 // import { fToNow } from 'src/utils/format-time';
 
-import dayjs from 'dayjs';
 import { useState } from 'react';
 
 // import type { PostItemProps } from '../blog/post-item';
 import { Collapse, IconButton } from '@mui/material';
 // import AnnouncementIcon from '@mui/icons-material/Announcement';
 
+import { dateToRange } from 'src/utils/format-date';
+
+import { varAlpha } from 'src/theme/styles';
+
 import { Label } from 'src/components/label';
 import { Iconify } from 'src/components/iconify';
 import { Scrollbar } from 'src/components/scrollbar';
 
-import type { ConcertItemProps } from '../concert/concert-item';
+import type { ConcertItemProps } from '../concert/utils';
 
 // ----------------------------------------------------------------------
 
@@ -44,15 +47,16 @@ export function AnalyticsNews({ title, subheader, list, ...other }: Props) {
         </Box>
       </Scrollbar>
 
-      {/* <Box sx={{ p: 2, textAlign: 'right' }}>
+      <Box sx={{ p: 2, textAlign: 'right' }}>
         <Button
           size="small"
           color="inherit"
           endIcon={<Iconify icon="eva:arrow-ios-forward-fill" width={18} sx={{ ml: -0.5 }} />}
+          href="/concert"
         >
           Все концерты
         </Button>
-      </Box> */}
+      </Box>
     </Card>
   );
 }
@@ -61,6 +65,8 @@ export function AnalyticsNews({ title, subheader, list, ...other }: Props) {
 
 function PostItem({ sx, item, ...other }: BoxProps & { item: Props['list'][number] }) {
   const [open, setOpen] = useState(false);
+  // const theme = useTheme();
+  // console.log(theme);
 
   const handleClick = () => {
     setOpen(!open);
@@ -110,7 +116,7 @@ function PostItem({ sx, item, ...other }: BoxProps & { item: Props['list'][numbe
 
         <Box sx={{ flexShrink: 0, color: 'text.disabled', typography: 'caption' }}>
           {/* {fToNow(item.concertDate)} */}
-          {item.concertDate.map((e) => dayjs(e).format('D.MM.YYYY')).join(' - ')}
+          {dateToRange(item.concertDate)}
         </Box>
       </Box>
       {item.comments !== 'null' && (
@@ -122,6 +128,9 @@ function PostItem({ sx, item, ...other }: BoxProps & { item: Props['list'][numbe
               gap: 2,
               display: 'flex',
               alignItems: 'center',
+              fontStyle: 'italic',
+              backgroundColor: (theme) =>
+                `${varAlpha(theme.vars.palette.info.lighterChannel, 0.48)}`,
               borderBottom: (theme) => `dashed 1px ${theme.vars.palette.divider}`,
               ...sx,
             }}
