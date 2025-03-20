@@ -16,6 +16,8 @@ import { useState } from 'react';
 import { Collapse, IconButton } from '@mui/material';
 // import AnnouncementIcon from '@mui/icons-material/Announcement';
 
+import { useNavigate } from 'react-router-dom';
+
 import { dateToRange } from 'src/utils/format-date';
 
 import { varAlpha } from 'src/theme/styles';
@@ -35,6 +37,10 @@ type Props = CardProps & {
 };
 
 export function AnalyticsNews({ title, subheader, list, ...other }: Props) {
+  const navigate = useNavigate();
+  const handleClick = () => {
+    navigate('/concert');
+  };
   return (
     <Card {...other}>
       <CardHeader title={title} subheader={subheader} sx={{ mb: 1 }} />
@@ -52,7 +58,7 @@ export function AnalyticsNews({ title, subheader, list, ...other }: Props) {
           size="small"
           color="inherit"
           endIcon={<Iconify icon="eva:arrow-ios-forward-fill" width={18} sx={{ ml: -0.5 }} />}
-          href="/concert"
+          onClick={handleClick}
         >
           Все концерты
         </Button>
