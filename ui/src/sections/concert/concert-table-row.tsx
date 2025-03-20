@@ -107,7 +107,7 @@ export function ConcertTableRow({ row }: ConcertTableRowProps) {
                   </Typography>
                 </Box>
               )}
-              {row.rehearsalDate.length && (
+              {row.rehearsalDate.length && dayjs(row.rehearsalDate[0]).isValid() && (
                 <Box sx={{ mb: 2 }}>
                   <Typography variant="subtitle2" component="h5" sx={{ padding: '0 0 0 30px' }}>
                     Даты репетиций:
