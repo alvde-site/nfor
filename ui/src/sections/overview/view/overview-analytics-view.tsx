@@ -299,9 +299,9 @@ export function OverviewAnalyticsView() {
         <Grid xs={12}>
           <AnalyticsNews
             title={
-              conсertList.slice(0, 5).length ? 'Концерты' : 'В этом сезоне больше нет концертов'
+              conсertList.slice(0, 10).length ? 'Концерты' : 'В этом сезоне больше нет концертов'
             }
-            list={conсertList.slice(0, 5)}
+            list={conсertList.slice(0, 10)}
           />
         </Grid>
 
