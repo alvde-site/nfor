@@ -1,109 +1,108 @@
-import type { Dayjs } from 'dayjs';
-
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import { useState, useEffect } from 'react';
 import timezone from 'dayjs/plugin/timezone';
 
+// import { AnalyticsTasks } from '../analytics-tasks';
 // import { Button } from '@mui/material';
 import Grid from '@mui/material/Unstable_Grid2';
-import Typography from '@mui/material/Typography';
-
-import { formatTextDate } from 'src/utils/format-date';
-import { sortData } from 'src/utils/sort-employee-list';
-import { generateColNames } from 'src/utils/generate-colnames';
 
 import { DashboardContent } from 'src/layouts/dashboard';
 
+import { createConcertList, type TConcertItemProps } from 'src/sections/concert/utils';
 // import {} from
 // _tasks,
 // _posts,
 // _timeline
 // 'src/_mock';
 
-import { workers } from 'src/utils/users';
-
-import DatePickerValue from 'src/components/input/DatePickerValue';
-
-import { AnalyticsCurrentVisits } from '../analytics-current-visits';
-// import { AnalyticsOrderTimeline } from '../analytics-order-timeline';
-// import { AnalyticsWebsiteVisits } from '../analytics-website-visits';
-// import { AnalyticsWidgetSummary } from '../analytics-widget-summary';
-// import { AnalyticsTrafficBySite } from '../analytics-traffic-by-site';
-// import { AnalyticsCurrentSubject } from '../analytics-current-subject';
-// import { AnalyticsConversionRates } from '../analytics-conversion-rates';
-
-type TEmpList =
-  | {}
-  | {
-      [key: string]: {
-        [key: string]: number;
-      };
-    };
-type TSetBusy = {
-  gData: [][];
-  empName: string;
-};
+import { AnalyticsNews } from '../analytics-news';
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
 
-export function OverviewAnalyticsView({ formattedData }: any) {
-  const [employeeList, setEmployeeList] = useState<TEmpList>({});
-  const [lastConcertDate, setLastConcertDate] = useState('');
-  const [dateValue, setDateValue] = useState<Dayjs | null>(dayjs());
+export function HomeView({ formattedData }: any) {
+  // const [lastConcertDate, setLastConcertDate] = useState('');
+  // const [dateValue, setDateValue] = useState<Dayjs | null>(dayjs());
+  const [conсertList, setConcertList] = useState<TConcertItemProps[]>([]);
 
   useEffect(() => {
-    let empList = {};
+    // let empList = {};
 
-    function setSingleBusy({ gData, empName }: TSetBusy) {
-      const empSingle = { [empName]: {} };
-      let total = 0;
+    // function setSingleBusy({ gData, empName }: TSetBusy) {
+    //   const empSingle = { [empName]: {} };
+    //   let total = 0;
 
-      generateColNames(empName).forEach((e) => {
-        const empIdx = gData[0].indexOf(e as never);
-        let sum = 0;
-        for (let i = 1; i < gData.length; i += 1) {
-          sum += gData[i][empIdx];
-        }
-        empSingle[empName] = { ...empSingle[empName], [e]: sum };
-        total += sum;
-        empSingle[empName] = { ...empSingle[empName], total };
-      });
-      empList = { ...empList, ...empSingle };
-      return empSingle;
-    }
+    //   generateColNames(empName).forEach((e) => {
+    //     const empIdx = gData[0].indexOf(e as never);
+    //     let sum = 0;
+    //     for (let i = 1; i < gData.length; i += 1) {
+    //       sum += gData[i][empIdx];
+    //     }
+    //     empSingle[empName] = { ...empSingle[empName], [e]: sum };
+    //     total += sum;
+    //     empSingle[empName] = { ...empSingle[empName], total };
+    //   });
+    //   empList = { ...empList, ...empSingle };
+    //   return empSingle;
+    // }
 
-    function createEmployeeList(sheetData: [][]) {
-      workers.forEach((w) => {
-        setSingleBusy({ gData: sheetData, empName: w });
-      });
-      setEmployeeList(empList);
-    }
+    // function createEmployeeList(sheetData: [][]) {
+    //   workers.forEach((w) => {
+    //     setSingleBusy({ gData: sheetData, empName: w });
+    //   });
+    //   setEmployeeList(empList);
+    // }
 
     function checkData() {
       if (formattedData.length) {
         console.log('forrmattedData from analitics', formattedData);
-        const lastConcert = formattedData
-          .map((e: string[][], i: number) => (i ? e[2][e[2].length - 1] : [0]))
-          .reverse()
-          .find((d: string) => new Date() >= new Date(d));
-        const sortedData = sortData(formattedData, dateValue);
-        setLastConcertDate(lastConcert);
-        createEmployeeList(sortedData);
+        // const lastConcert = formattedData
+        //   .map((e: string[][], i: number) => (i ? e[2][e[2].length - 1] : [0]))
+        //   .reverse()
+        //   .find((d: string) => new Date() >= new Date(d));
+        // const sortedData = sortData(formattedData, dayjs());
+        // setLastConcertDate(lastConcert);
+        // createEmployeeList(sortedData);
+        const conList = createConcertList(formattedData);
+
+        const featureConList = conList.filter(
+          (e) => dayjs(dayjs()).startOf('day') <= dayjs(e.concertDate[e.concertDate.length - 1])
+        );
+
+        setConcertList(featureConList);
       }
+      //   else {
+      //     console.log('overview-analitics-view  else');
+      //     const localData = JSON.parse(localStorage.getItem('initData')!);
+
+      //     const sortedData = sortData(localData, dayjs(dateValue));
+      //     const lastConcert = localData
+      //       .map((e: string[][], i: number) => (i ? e[2][e[2].length - 1] : [0]))
+      //       .reverse()
+      //       .find((d: string) => dayjs(dateValue) >= dayjs(d));
+      //     setLastConcertDate(lastConcert);
+      //     createEmployeeList(sortedData);
+      //     const conList = createConcertList(localData);
+      //     const featureConList = conList.filter(
+      //       (e) => dayjs(dateValue).startOf('day') <= dayjs(e.concertDate[e.concertDate.length - 1])
+      //     );
+      //     setConcertList(featureConList);
+      //   }
     }
     checkData();
-  }, [dateValue, formattedData]);
+  }, [formattedData]);
 
   return (
     <DashboardContent maxWidth="xl">
-      <Typography
-        component="h4"
-        variant="h5"
+      {/* <Typography
+        variant="h4"
         sx={{ mb: { xs: 3, md: 5 } }}
-      >{`${formatTextDate(lastConcertDate)}`}</Typography>
-      <DatePickerValue value={dateValue} setValue={setDateValue} />
+      >
+        {`${formatTextDate(lastConcertDate)}`}
+        
+        </Typography>
+      <DatePickerValue value={dateValue} setValue={setDateValue} /> */}
 
       <Grid container spacing={3}>
         {/* <Grid xs={12} sm={6} md={3}>
@@ -161,7 +160,7 @@ export function OverviewAnalyticsView({ formattedData }: any) {
           />
         </Grid> */}
 
-        <Grid xs={12} md={12} lg={4}>
+        {/* <Grid xs={12} md={12} lg={4}>
           <AnalyticsCurrentVisits
             title="Общее количество вызовов"
             chart={{
@@ -201,7 +200,7 @@ export function OverviewAnalyticsView({ formattedData }: any) {
               ],
             }}
           />
-        </Grid>
+        </Grid> */}
 
         {/* <Grid xs={12} md={6} lg={12}>
           <AnalyticsWebsiteVisits
@@ -245,14 +244,16 @@ export function OverviewAnalyticsView({ formattedData }: any) {
           />
         </Grid> */}
 
-        {/* <Grid xs={12}>
+        <Grid xs={12}>
           <AnalyticsNews
             title={
-              conсertList.slice(0, 10).length ? 'Концерты' : 'В этом сезоне больше нет концертов'
+              conсertList.slice(0, 10).length
+                ? 'Ближайшие концерты'
+                : 'В этом сезоне больше нет концертов'
             }
             list={conсertList.slice(0, 10)}
           />
-        </Grid> */}
+        </Grid>
 
         {/* <Grid xs={12} md={6} lg={4}>
           <AnalyticsOrderTimeline title="Order timeline" list={_timeline} />

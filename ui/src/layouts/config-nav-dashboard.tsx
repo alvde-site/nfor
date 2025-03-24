@@ -18,11 +18,11 @@ export const navData = [
     path: '/concert',
     icon: icon('ic-concert'),
   },
-  // {
-  //   title: 'Обзор',
-  //   path: '/analitic',
-  //   icon: icon('ic-statistic'),
-  // },
+  {
+    title: 'Обзор',
+    path: '/analitics',
+    icon: icon('ic-statistic'),
+  },
   // {
   //   title: 'Пользователи',
   //   path: '/users',

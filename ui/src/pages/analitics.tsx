@@ -2,19 +2,19 @@ import { Helmet } from 'react-helmet-async';
 
 import { CONFIG } from 'src/config-global';
 
-import { ConcertView } from 'src/sections/concert/view';
+import { OverviewAnalyticsView } from 'src/sections/overview/view';
 
 // ----------------------------------------------------------------------
 
 export default function Page({ data }: { data: any }) {
-  console.log('concert', data);
+  console.log('home', data);
   return (
     <>
       <Helmet>
-        <title> {`Концерты - ${CONFIG.appName}`}</title>
+        <title> {`Обзор - ${CONFIG.appName}`}</title>
       </Helmet>
 
-      <ConcertView formattedData={data} />
+      <OverviewAnalyticsView formattedData={data} />
     </>
   );
 }

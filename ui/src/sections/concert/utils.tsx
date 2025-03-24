@@ -1,3 +1,5 @@
+import type { TInitDataItem } from 'src/utils/bdData';
+
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
@@ -7,30 +9,9 @@ import { users } from 'src/utils/users';
 dayjs.extend(utc);
 dayjs.extend(timezone);
 
-export type TInitDataItem = [
-  id: number,
-  CName: string,
-  CDate: string,
-  RDate: string,
-  CDem: number,
-  RDem: number,
-  CZen: number,
-  RZen: number,
-  CBak: number,
-  RBak: number,
-  CKli: number,
-  RKli: number,
-  CTotal: number,
-  RTotal: number,
-  Comments: string,
-  Approved: boolean,
-  Details: string,
-  Notes: string,
-];
-
 type TEmplDet = string[][];
 
-export type ConcertItemProps = {
+export type TConcertItemProps = {
   id: number;
   title: string;
   coverUrl: string;

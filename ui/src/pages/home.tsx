@@ -2,11 +2,12 @@ import { Helmet } from 'react-helmet-async';
 
 import { CONFIG } from 'src/config-global';
 
-import { OverviewAnalyticsView } from 'src/sections/overview/view';
+import { HomeView } from 'src/sections/home/view';
 
 // ----------------------------------------------------------------------
 
-export default function Page() {
+export default function Page({ data }: { data: any }) {
+  console.log('home', data);
   return (
     <>
       <Helmet>
@@ -15,7 +16,7 @@ export default function Page() {
         <meta name="keywords" content="НФОР, тромбоны" />
       </Helmet>
 
-      <OverviewAnalyticsView />
+      <HomeView formattedData={data} />
     </>
   );
 }

@@ -1,7 +1,6 @@
 import type { StackProps } from '@mui/material/Stack';
 
 import { useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
 
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -9,12 +8,10 @@ import Button from '@mui/material/Button';
 // ----------------------------------------------------------------------
 
 export function NavUpgrade({ sx, ...other }: StackProps) {
-  const navigate = useNavigate();
   const handleUpdate = useCallback(() => {
-    navigate('/');
     localStorage.removeItem('initData');
     window.location.reload();
-  }, [navigate]);
+  }, []);
 
   return (
     <Box

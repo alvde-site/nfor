@@ -3,7 +3,7 @@ import type { Dayjs } from 'dayjs';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
-import { useState, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
@@ -25,6 +25,8 @@ import { TableEmptyRows } from '../table-empty-rows';
 import { ConcertTableRow } from '../concert-table-row';
 import { emptyRows, createConcertList } from '../utils';
 import { ConcertTableHead } from '../concert-table-head';
+
+import type { TConcertItemProps } from '../utils';
 // import { ConcertTableToolbar } from '../concert-table-toolbar';
 // import { emptyRows, applyFilter, getComparator } from '../utils';
 
@@ -35,12 +37,25 @@ dayjs.extend(timezone);
 
 // ----------------------------------------------------------------------
 
-export function ConcertView() {
-  const table = useTable();
+export function ConcertView({ formattedData }: any) {
+  const table = useTable({ formattedData });
+  const [concertData, setConcertData] = useState<TConcertItemProps[]>([]);
+
+  useEffect(() => {
+    function checkData() {
+      if (formattedData.length) {
+        const conData = createConcertList(formattedData);
+        console.log('useEffect conData', conData);
+        setConcertData(conData);
+      }
+    }
+
+    checkData();
+  }, [formattedData]);
 
   // const [filterName, setFilterName] = useState('');
-  const localData = JSON.parse(localStorage.getItem('initData')!);
-  const localDataLength = localData.length - 1;
+  // const localData = JSON.parse(localStorage.getItem('initData')!);
+  // const localDataLength = localData.length - 1;
   // const getCurrentConcert = useCallback(() => {
   //   const lastConcert = localData
   //     .map((e: string[][], i: number) => (i ? dayjs(e[2][e[2].length - 1]) : dayjs(0)))
@@ -51,7 +66,8 @@ export function ConcertView() {
   //   table.onSetDefaultPage(Math.floor(currentConcertIdx / table.rowsPerPage));
   // }, []);
   // getCurrentConcert();
-  const conData = createConcertList(localData.slice(1));
+  // const conData = createConcertList(loc.slice(1));
+  console.log('conData', concertData);
 
   // const dataFiltered: UserProps[] = applyFilter({
   //   inputData: _users,
@@ -124,7 +140,7 @@ export function ConcertView() {
                   selected={table.selected.includes(row.id)}
                   onSelectRow={() => table.onSelectRow(row.id)}
                 /> */}
-                {conData
+                {concertData
                   .slice(1)
                   .slice(
                     table.page * table.rowsPerPage,
@@ -141,7 +157,7 @@ export function ConcertView() {
 
                 <TableEmptyRows
                   height={92}
-                  emptyRows={emptyRows(table.page, table.rowsPerPage, localDataLength - 1)}
+                  emptyRows={emptyRows(table.page, table.rowsPerPage, concertData.length - 1)}
                 />
 
                 {/* {notFound && <TableNoData searchQuery={filterName} />} */}
@@ -153,10 +169,10 @@ export function ConcertView() {
         <TablePagination
           component="div"
           page={table.page}
-          count={localDataLength - 1}
+          count={concertData.length - 1}
           rowsPerPage={table.rowsPerPage}
           onPageChange={table.onChangePage}
-          rowsPerPageOptions={[5, 10, 25]}
+          rowsPerPageOptions={[10, 25, 50]}
           onRowsPerPageChange={table.onChangeRowsPerPage}
           labelDisplayedRows={table.defaultLabelDisplayedRows}
           labelRowsPerPage="Строк на стр.:"
@@ -168,23 +184,24 @@ export function ConcertView() {
 
 // ----------------------------------------------------------------------
 
-export function useTable() {
+export function useTable({ formattedData }: any) {
   const [orderBy, setOrderBy] = useState('name');
-  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
   const [selected, setSelected] = useState<string[]>([]);
   const [order, setOrder] = useState<'asc' | 'desc'>('asc');
 
-  const localData = JSON.parse(localStorage.getItem('initData')!);
-  const localDataLength = localData.length - 1;
+  // const localData = JSON.parse(localStorage.getItem('initData')!);
+  const localDataLength = formattedData.length - 1;
 
   const getCurrentConcertIndex = useCallback(() => {
-    const lastConcert = localData
+    const lastConcert = formattedData
       .map((e: string[][], i: number) => (i ? dayjs(e[2][e[2].length - 1]) : dayjs(0)))
       .slice(1)
       .reverse()
       .findIndex((d: Dayjs) => dayjs().startOf('day') >= d);
-    return Math.floor((localDataLength - 2 - lastConcert) / rowsPerPage);
-  }, [localData, localDataLength, rowsPerPage]);
+    const currentConcertIndex = Math.floor((localDataLength - 2 - lastConcert) / rowsPerPage);
+    return currentConcertIndex >= 0 ? currentConcertIndex : 0;
+  }, [formattedData, localDataLength, rowsPerPage]);
 
   const [page, setPage] = useState(getCurrentConcertIndex);
 
@@ -229,7 +246,8 @@ export function useTable() {
   }, []);
 
   const defaultLabelDisplayedRows = useCallback(
-    ({ from, to, count }: any) => `${from}–${to} из ${count !== -1 ? count : `more than ${to}`}`,
+    // ({ from, to, count }: any) => `${from}–${to} из ${count !== -1 ? count : `больше чем ${to}`}`,
+    ({ from, to, count }: any) => (count !== -1 ? `${from}–${to} из ${count}` : 'Концертов нет'),
     []
   );
 

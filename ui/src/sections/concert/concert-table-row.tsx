@@ -29,12 +29,12 @@ import { varAlpha } from 'src/theme/styles';
 import { Label } from 'src/components/label';
 import { Iconify } from 'src/components/iconify';
 
-import { removeEmptyData, type ConcertItemProps } from './utils';
+import { removeEmptyData, type TConcertItemProps } from './utils';
 
 // ----------------------------------------------------------------------
 
 type ConcertTableRowProps = {
-  row: ConcertItemProps;
+  row: TConcertItemProps;
 };
 
 export function ConcertTableRow({ row }: ConcertTableRowProps) {

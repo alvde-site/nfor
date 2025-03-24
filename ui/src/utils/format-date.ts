@@ -50,7 +50,7 @@ export function formatTextDate(date: string) {
     'декабря',
   ];
   return months[curDate.getMonth()]
-    ? `Занятость действительна c 1 ${months[8]} 2024 года по ${curDate.getDate()} ${months[curDate.getMonth()]} ${curDate.getFullYear()} года (дата последнего концерта).`
+    ? `Вызовы рассчитываются на период с 1 ${months[8]} 2024 года по ${curDate.getDate()} ${months[curDate.getMonth()]} ${curDate.getFullYear()} года (дата последнего концерта).`
     : '';
 }
 
@@ -59,3 +59,8 @@ export const dateToRange = (dates: string | string[]) => {
     dates.length > 1 ? [dayjs(dates[0]), dayjs(dates[dates.length - 1])] : [dayjs(dates[0])];
   return datejsArr.map((e) => dayjs(e).format('D.MM.YYYY')).join(' - ');
 };
+
+export const formatConRehDate = (res: any) =>
+  res.map((e: [], i: number) =>
+    i ? e.map((el, idx) => (idx === 2 || idx === 3 ? formatDate(el) : el)) : e
+  );
