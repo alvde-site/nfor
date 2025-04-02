@@ -45,7 +45,6 @@ export function ConcertView({ formattedData }: any) {
     function checkData() {
       if (formattedData.length) {
         const conData = createConcertList(formattedData);
-        console.log('useEffect conData', conData);
         setConcertData(conData);
       }
     }
@@ -67,7 +66,6 @@ export function ConcertView({ formattedData }: any) {
   // }, []);
   // getCurrentConcert();
   // const conData = createConcertList(loc.slice(1));
-  console.log('conData', concertData);
 
   // const dataFiltered: UserProps[] = applyFilter({
   //   inputData: _users,

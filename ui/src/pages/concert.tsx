@@ -7,7 +7,6 @@ import { ConcertView } from 'src/sections/concert/view';
 // ----------------------------------------------------------------------
 
 export default function Page({ data }: { data: any }) {
-  console.log('concert', data);
   return (
     <>
       <Helmet>

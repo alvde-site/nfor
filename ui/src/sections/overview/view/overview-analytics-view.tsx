@@ -30,8 +30,9 @@ import { AnalyticsCurrentVisits } from '../analytics-current-visits';
 // import { AnalyticsWebsiteVisits } from '../analytics-website-visits';
 // import { AnalyticsWidgetSummary } from '../analytics-widget-summary';
 // import { AnalyticsTrafficBySite } from '../analytics-traffic-by-site';
+import { months, getDatesArr, getMonthsCount, getArraySum } from '../utils';
 // import { AnalyticsCurrentSubject } from '../analytics-current-subject';
-// import { AnalyticsConversionRates } from '../analytics-conversion-rates';
+import { AnalyticsConversionRates } from '../analytics-conversion-rates';
 
 type TEmpList =
   | {}
@@ -48,12 +49,16 @@ type TSetBusy = {
 dayjs.extend(utc);
 dayjs.extend(timezone);
 
+type TRates = [string[], number[], number[], number[]];
+
 export function OverviewAnalyticsView({ formattedData }: any) {
   const [employeeList, setEmployeeList] = useState<TEmpList>({});
   const [lastConcertDate, setLastConcertDate] = useState('');
   const [dateValue, setDateValue] = useState<Dayjs | null>(dayjs());
+  const [monthsRates, setMonthsRates] = useState<TRates>([[], [], [], []]);
 
   useEffect(() => {
+    // circl data
     let empList = {};
 
     function setSingleBusy({ gData, empName }: TSetBusy) {
@@ -80,17 +85,58 @@ export function OverviewAnalyticsView({ formattedData }: any) {
       });
       setEmployeeList(empList);
     }
+    // end circl data
+    // --------------------------------------------------------------------------------------------------
+    // rates data
+
+    function createRateList(concertData: string | any[]) {
+      const rates: TRates = [[], [], [], []];
+      const formatConcertData = concertData.slice(1);
+      const conDatesCount = getMonthsCount(getDatesArr(formatConcertData, 2));
+      const rehDatesCount = getMonthsCount(getDatesArr(formatConcertData, 3));
+
+      for (let i = 9; i <= 12; i += 1) {
+        if (
+          Object.prototype.hasOwnProperty.call(conDatesCount, i) &&
+          Object.prototype.hasOwnProperty.call(rehDatesCount, i)
+        ) {
+          rates[0].push(months[`${i}`]);
+          rates[1].push(conDatesCount[`${i}`]);
+          rates[2].push(rehDatesCount[`${i}`]);
+        }
+      }
+
+      for (let i = 1; i <= 8; i += 1) {
+        if (
+          Object.prototype.hasOwnProperty.call(conDatesCount, i) &&
+          Object.prototype.hasOwnProperty.call(rehDatesCount, i)
+        ) {
+          rates[0].push(months[`${i}`]);
+          rates[1].push(conDatesCount[`${i}`]);
+          rates[2].push(rehDatesCount[`${i}`]);
+        }
+      }
+
+      for (let i = 0; i < rates[0].length; i += 1) {
+        rates[3].push(rates[1][i] + rates[2][i]);
+      }
+
+      return rates;
+    }
+
+    // end rates data
 
     function checkData() {
       if (formattedData.length) {
-        console.log('forrmattedData from analitics', formattedData);
         const lastConcert = formattedData
           .map((e: string[][], i: number) => (i ? e[2][e[2].length - 1] : [0]))
           .reverse()
           .find((d: string) => new Date() >= new Date(d));
         const sortedData = sortData(formattedData, dateValue);
+        const rates = createRateList(sortedData);
         setLastConcertDate(lastConcert);
         createEmployeeList(sortedData);
+        setMonthsRates(rates);
       }
     }
     checkData();
@@ -215,23 +261,24 @@ export function OverviewAnalyticsView({ formattedData }: any) {
               ],
             }}
           />
-        </Grid>
+        </Grid> */}
 
-        <Grid xs={12} md={6} lg={8}>
+        <Grid xs={12}>
           <AnalyticsConversionRates
-            title="Conversion rates"
-            subheader="(+43%) than last year"
+            title="Сезон 2024-2025"
+            subheader={`Концерты - ${getArraySum(monthsRates[1])}. Репетиции - ${getArraySum(monthsRates[2])}. Всего - ${getArraySum(monthsRates[3])}.`}
             chart={{
-              categories: ['Italy', 'Japan', 'China', 'Canada', 'France'],
+              categories: monthsRates[0],
               series: [
-                { name: '2022', data: [44, 55, 41, 64, 22] },
-                { name: '2023', data: [53, 32, 33, 52, 13] },
+                { name: 'Концерты', data: monthsRates[1] },
+                { name: 'Репетиции', data: monthsRates[2] },
+                { name: 'Всего', data: monthsRates[3] },
               ],
             }}
           />
         </Grid>
 
-        <Grid xs={12} md={6} lg={4}>
+        {/* <Grid xs={12} md={6} lg={4}>
           <AnalyticsCurrentSubject
             title="Current subject"
             chart={{

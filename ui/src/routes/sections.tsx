@@ -60,7 +60,6 @@ export function Router() {
           .then((res) => {
             const formattedData = formatConRehDate(res);
             localStorage.setItem('initData', JSON.stringify(formattedData));
-            console.log('formattedData from section', formattedData);
             setData(formattedData);
           });
       } else if (localStorage.getItem('initData')) {

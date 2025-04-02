@@ -7,7 +7,6 @@ import { HomeView } from 'src/sections/home/view';
 // ----------------------------------------------------------------------
 
 export default function Page({ data }: { data: any }) {
-  console.log('home', data);
   return (
     <>
       <Helmet>

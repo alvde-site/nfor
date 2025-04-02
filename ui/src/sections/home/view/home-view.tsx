@@ -56,7 +56,6 @@ export function HomeView({ formattedData }: any) {
 
     function checkData() {
       if (formattedData.length) {
-        console.log('forrmattedData from analitics', formattedData);
         // const lastConcert = formattedData
         //   .map((e: string[][], i: number) => (i ? e[2][e[2].length - 1] : [0]))
         //   .reverse()

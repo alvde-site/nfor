@@ -29,8 +29,9 @@ export function AnalyticsConversionRates({ title, subheader, chart, ...other }: 
   const theme = useTheme();
 
   const chartColors = chart.colors ?? [
-    theme.palette.primary.dark,
-    hexAlpha(theme.palette.primary.dark, 0.24),
+    theme.palette.primary.main,
+    theme.palette.primary.light,
+    hexAlpha(theme.palette.secondary.dark, 1),
   ];
 
   const chartOptions = useChart({
@@ -50,11 +51,12 @@ export function AnalyticsConversionRates({ title, subheader, chart, ...other }: 
       offsetX: -6,
       style: { fontSize: '10px', colors: ['#FFFFFF', theme.palette.text.primary] },
     },
+    legend: { show: true },
     plotOptions: {
       bar: {
         horizontal: true,
         borderRadius: 2,
-        barHeight: '48%',
+        barHeight: '70%',
         dataLabels: { position: 'top' },
       },
     },
@@ -69,8 +71,8 @@ export function AnalyticsConversionRates({ title, subheader, chart, ...other }: 
         type="bar"
         series={chart.series}
         options={chartOptions}
-        height={360}
-        sx={{ py: 2.5, pl: 1, pr: 2.5 }}
+        height={600}
+        sx={{ py: 2.5, pl: 1, pr: 2.5, display: 'block' }}
       />
     </Card>
   );
