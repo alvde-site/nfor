@@ -1,3 +1,4 @@
+import type { Dayjs } from 'dayjs';
 import type { CardProps } from '@mui/material/Card';
 import type { ColorType } from 'src/theme/core/palette';
 import type { ChartOptions } from 'src/components/chart';
@@ -6,11 +7,12 @@ import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import { useTheme } from '@mui/material/styles';
 
-import { fNumber, fPercent, fShortenNumber } from 'src/utils/format-number';
+import { fHourWeek } from 'src/utils/format-date';
+import { fNumber, fPercent } from 'src/utils/format-number';
 
 import { varAlpha, bgGradient } from 'src/theme/styles';
 
-import { Iconify } from 'src/components/iconify';
+// import { Iconify } from 'src/components/iconify';
 import { SvgColor } from 'src/components/svg-color';
 import { Chart, useChart } from 'src/components/chart';
 
@@ -19,6 +21,8 @@ import { Chart, useChart } from 'src/components/chart';
 type Props = CardProps & {
   title: string;
   total: number;
+  currentDay: Dayjs | null;
+  startSeason: string | undefined;
   percent: number;
   color?: ColorType;
   icon: React.ReactNode;
@@ -33,6 +37,8 @@ export function AnalyticsWidgetSummary({
   icon,
   title,
   total,
+  currentDay,
+  startSeason,
   chart,
   percent,
   color = 'primary',
@@ -72,10 +78,11 @@ export function AnalyticsWidgetSummary({
         alignItems: 'center',
       }}
     >
-      <Iconify width={20} icon={percent < 0 ? 'eva:trending-down-fill' : 'eva:trending-up-fill'} />
+      {/* <Iconify width={20} icon={percent < 0 ? 'eva:trending-down-fill' : 'eva:trending-up-fill'} /> */}
       <Box component="span" sx={{ typography: 'subtitle2' }}>
-        {percent > 0 && '+'}
-        {fPercent(percent)}
+        {/* {percent > 0 && '+'} */}
+        {/* {fPercent(percent)} */}
+        {fHourWeek(currentDay, total, startSeason)}
       </Box>
     </Box>
   );
@@ -109,7 +116,7 @@ export function AnalyticsWidgetSummary({
       >
         <Box sx={{ flexGrow: 1, minWidth: 112 }}>
           <Box sx={{ mb: 1, typography: 'subtitle2' }}>{title}</Box>
-          <Box sx={{ typography: 'h4' }}>{fShortenNumber(total)}</Box>
+          <Box sx={{ typography: 'h4' }}>{fPercent(percent)}</Box>
         </Box>
 
         <Chart

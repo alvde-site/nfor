@@ -170,7 +170,7 @@ export function ConcertView({ formattedData }: any) {
           count={concertData.length - 1}
           rowsPerPage={table.rowsPerPage}
           onPageChange={table.onChangePage}
-          rowsPerPageOptions={[10, 25, 50]}
+          rowsPerPageOptions={[5, 10, 25, 50]}
           onRowsPerPageChange={table.onChangeRowsPerPage}
           labelDisplayedRows={table.defaultLabelDisplayedRows}
           labelRowsPerPage="Строк на стр.:"
@@ -184,7 +184,7 @@ export function ConcertView({ formattedData }: any) {
 
 export function useTable({ formattedData }: any) {
   const [orderBy, setOrderBy] = useState('name');
-  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
   const [selected, setSelected] = useState<string[]>([]);
   const [order, setOrder] = useState<'asc' | 'desc'>('asc');
 

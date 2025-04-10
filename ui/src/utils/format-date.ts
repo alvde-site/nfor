@@ -1,4 +1,15 @@
+import type { Dayjs } from 'dayjs';
+
 import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
+import timezone from 'dayjs/plugin/timezone';
+
+import { processInput } from './format-number';
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
+
+const seasonStart = `${dayjs().year()}-08-15`;
 
 export function formatDate(d: string) {
   let result = '';
@@ -64,3 +75,10 @@ export const formatConRehDate = (res: any) =>
   res.map((e: [], i: number) =>
     i ? e.map((el, idx) => (idx === 2 || idx === 3 ? formatDate(el) : el)) : e
   );
+
+export const fHourWeek = (end: Dayjs | null, totalValue: number, start: string = seasonStart) => {
+  const number = processInput(totalValue);
+  if (number === null || number === 0 || end === null) return '0 ч/нед';
+  const dayDiff = dayjs(end).diff(start, 'day') <= 300 ? dayjs(end).diff(start, 'day') : 300;
+  return `${Math.round((totalValue * 4) / Math.round(dayDiff / 7))} ч/нед`;
+};

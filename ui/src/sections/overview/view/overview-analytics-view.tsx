@@ -21,28 +21,50 @@ import { DashboardContent } from 'src/layouts/dashboard';
 // _timeline
 // 'src/_mock';
 
-import { workers } from 'src/utils/users';
+import { users, userKeys } from 'src/utils/users';
+// import { AnalyticsOrderTimeline } from '../analytics-order-timeline';
+import { countPercent } from 'src/utils/format-number';
 
 import DatePickerValue from 'src/components/input/DatePickerValue';
 
 import { AnalyticsCurrentVisits } from '../analytics-current-visits';
-// import { AnalyticsOrderTimeline } from '../analytics-order-timeline';
 // import { AnalyticsWebsiteVisits } from '../analytics-website-visits';
-// import { AnalyticsWidgetSummary } from '../analytics-widget-summary';
-// import { AnalyticsTrafficBySite } from '../analytics-traffic-by-site';
-import { months, getDatesArr, getMonthsCount, getArraySum } from '../utils';
+import { AnalyticsWidgetSummary } from '../analytics-widget-summary';
 // import { AnalyticsCurrentSubject } from '../analytics-current-subject';
 import { AnalyticsConversionRates } from '../analytics-conversion-rates';
+// import { AnalyticsTrafficBySite } from '../analytics-traffic-by-site';
+import {
+  months,
+  setSeries,
+  getDatesArr,
+  getArraySum,
+  getMaxOfArray,
+  getMonthsCount,
+  fPercentToColor,
+} from '../utils';
 
-type TEmpList =
-  | {}
+interface TDetails {
+  categories: string[];
+  series: number[];
+}
+
+export type TEmplList =
+  | never
   | {
       [key: string]: {
-        [key: string]: number;
+        details: TDetails;
+        [key: string]: number | TDetails | string;
       };
     };
+
+type TTotalPerMonth =
+  | never
+  | {
+      [key: string]: number;
+    };
+
 type TSetBusy = {
-  gData: [][];
+  gData: unknown[][];
   empName: string;
 };
 
@@ -52,7 +74,7 @@ dayjs.extend(timezone);
 type TRates = [string[], number[], number[], number[]];
 
 export function OverviewAnalyticsView({ formattedData }: any) {
-  const [employeeList, setEmployeeList] = useState<TEmpList>({});
+  const [employeeList, setEmployeeList] = useState<TEmplList>({});
   const [lastConcertDate, setLastConcertDate] = useState('');
   const [dateValue, setDateValue] = useState<Dayjs | null>(dayjs());
   const [monthsRates, setMonthsRates] = useState<TRates>([[], [], [], []]);
@@ -64,24 +86,52 @@ export function OverviewAnalyticsView({ formattedData }: any) {
     function setSingleBusy({ gData, empName }: TSetBusy) {
       const empSingle = { [empName]: {} };
       let total = 0;
+      const details = { categories: [], series: [] };
+      const totalPerMonths: TTotalPerMonth = {};
 
       generateColNames(empName).forEach((e) => {
         const empIdx = gData[0].indexOf(e as never);
         let sum = 0;
         for (let i = 1; i < gData.length; i += 1) {
-          sum += gData[i][empIdx];
+          sum += gData[i][empIdx] as number;
+          const monthNum = Number(
+            (gData[i][2] as string[])[(gData[i][2] as string[]).length - 1].match(/(?<=\d+-)\d{2}/)
+          );
+          if (Object.hasOwn(totalPerMonths, monthNum)) {
+            totalPerMonths[monthNum] += gData[i][empIdx] as number;
+          } else {
+            totalPerMonths[monthNum] = gData[i][empIdx] as number;
+          }
         }
         empSingle[empName] = { ...empSingle[empName], [e]: sum };
         total += sum;
         empSingle[empName] = { ...empSingle[empName], total };
       });
+
+      for (let i = 8; i <= 12; i += 1) {
+        (details as TDetails).categories.push(months[`${i}`]);
+        (details as TDetails).series.push(totalPerMonths[i] ? totalPerMonths[i] * 4 : 0);
+      }
+
+      for (let i = 1; i <= 7; i += 1) {
+        (details as TDetails).categories.push(months[`${i}`]);
+        (details as TDetails).series.push(totalPerMonths[i] ? totalPerMonths[i] * 4 : 0);
+      }
+
+      empSingle[empName] = { ...empSingle[empName], details };
       empList = { ...empList, ...empSingle };
       return empSingle;
     }
 
     function createEmployeeList(sheetData: [][]) {
-      workers.forEach((w) => {
+      userKeys.forEach((w) => {
         setSingleBusy({ gData: sheetData, empName: w });
+      });
+
+      const totalArr = userKeys.map((u) => (empList as TEmplList)[u].total);
+      const maxTotal = getMaxOfArray(totalArr as number[]);
+      userKeys.forEach((u) => {
+        (empList as TEmplList)[u].maxTotal = maxTotal;
       });
       setEmployeeList(empList);
     }
@@ -152,71 +202,37 @@ export function OverviewAnalyticsView({ formattedData }: any) {
       <DatePickerValue value={dateValue} setValue={setDateValue} />
 
       <Grid container spacing={3}>
-        {/* <Grid xs={12} sm={6} md={3}>
-          <AnalyticsWidgetSummary
-            title="Weekly sales"
-            percent={2.6}
-            total={714000}
-            icon={<img alt="icon" src="/assets/icons/glass/ic-glass-bag.svg" />}
-            chart={{
-              categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug'],
-              series: [22, 8, 35, 50, 82, 84, 77, 12],
-            }}
-          />
-        </Grid>
-
-        <Grid xs={12} sm={6} md={3}>
-          <AnalyticsWidgetSummary
-            title="New users"
-            percent={-0.1}
-            total={1352831}
-            color="secondary"
-            icon={<img alt="icon" src="/assets/icons/glass/ic-glass-users.svg" />}
-            chart={{
-              categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug'],
-              series: [56, 47, 40, 62, 73, 30, 23, 54],
-            }}
-          />
-        </Grid>
-
-        <Grid xs={12} sm={6} md={3}>
-          <AnalyticsWidgetSummary
-            title="Purchase orders"
-            percent={2.8}
-            total={1723315}
-            color="warning"
-            icon={<img alt="icon" src="/assets/icons/glass/ic-glass-buy.svg" />}
-            chart={{
-              categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug'],
-              series: [40, 70, 50, 28, 70, 75, 7, 64],
-            }}
-          />
-        </Grid>
-
-        <Grid xs={12} sm={6} md={3}>
-          <AnalyticsWidgetSummary
-            title="Messages"
-            percent={3.6}
-            total={234}
-            color="error"
-            icon={<img alt="icon" src="/assets/icons/glass/ic-glass-message.svg" />}
-            chart={{
-              categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug'],
-              series: [56, 30, 23, 54, 47, 40, 62, 73],
-            }}
-          />
-        </Grid> */}
+        {userKeys.map((u, i) => (
+          <Grid xs={12} sm={6} md={3} key={i}>
+            <AnalyticsWidgetSummary
+              title={users[i]}
+              percent={
+                u in employeeList
+                  ? countPercent(employeeList[u].total as number, getArraySum(monthsRates[3]))
+                  : 0
+              }
+              total={u in employeeList ? (employeeList[u].total as number) : 0}
+              currentDay={dateValue}
+              startSeason="2024-08-15"
+              color={fPercentToColor(
+                u in employeeList ? (employeeList[u].maxTotal as number) : 1,
+                u in employeeList ? (employeeList[u].total as number) : 0,
+                getArraySum(monthsRates[3])
+              )}
+              icon={<img alt="icon" src="/assets/icons/glass/ic-glass-users.svg" />}
+              chart={{
+                categories: u in employeeList ? employeeList[u].details.categories : [],
+                series: u in employeeList ? employeeList[u].details.series : [],
+              }}
+            />
+          </Grid>
+        ))}
 
         <Grid xs={12} md={12} lg={4}>
           <AnalyticsCurrentVisits
             title="Общее количество вызовов"
             chart={{
-              series: [
-                { label: 'Демиденко', value: 'dem' in employeeList ? employeeList.dem.total : 0 },
-                { label: 'Зенчугов', value: 'zen' in employeeList ? employeeList.zen.total : 0 },
-                { label: 'Баканов', value: 'bak' in employeeList ? employeeList.bak.total : 0 },
-                { label: 'Клименко', value: 'kli' in employeeList ? employeeList.kli.total : 0 },
-              ],
+              series: setSeries(userKeys, users, employeeList),
             }}
           />
         </Grid>
@@ -225,12 +241,7 @@ export function OverviewAnalyticsView({ formattedData }: any) {
           <AnalyticsCurrentVisits
             title="Вызовы по концертам"
             chart={{
-              series: [
-                { label: 'Демиденко', value: 'dem' in employeeList ? employeeList.dem.CDem : 0 },
-                { label: 'Зенчугов', value: 'zen' in employeeList ? employeeList.zen.CZen : 0 },
-                { label: 'Баканов', value: 'bak' in employeeList ? employeeList.bak.CBak : 0 },
-                { label: 'Клименко', value: 'kli' in employeeList ? employeeList.kli.CKli : 0 },
-              ],
+              series: setSeries(userKeys, users, employeeList, 'C'),
             }}
           />
         </Grid>
@@ -239,12 +250,7 @@ export function OverviewAnalyticsView({ formattedData }: any) {
           <AnalyticsCurrentVisits
             title="Вызовы по репетициям"
             chart={{
-              series: [
-                { label: 'Демиденко', value: 'dem' in employeeList ? employeeList.dem.RDem : 0 },
-                { label: 'Зенчугов', value: 'zen' in employeeList ? employeeList.zen.RZen : 0 },
-                { label: 'Баканов', value: 'bak' in employeeList ? employeeList.bak.RBak : 0 },
-                { label: 'Клименко', value: 'kli' in employeeList ? employeeList.kli.RKli : 0 },
-              ],
+              series: setSeries(userKeys, users, employeeList, 'R'),
             }}
           />
         </Grid>
@@ -316,7 +322,7 @@ export function OverviewAnalyticsView({ formattedData }: any) {
             ]}
           />
         </Grid>
- */}
+
         {/* <Grid xs={12} md={6} lg={8}>
           <AnalyticsTasks title="Tasks" list={_tasks} />
         </Grid> */}
