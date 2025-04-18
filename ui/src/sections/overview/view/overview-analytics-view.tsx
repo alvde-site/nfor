@@ -178,11 +178,11 @@ export function OverviewAnalyticsView({ formattedData }: any) {
 
     function checkData() {
       if (formattedData.length) {
-        const lastConcert = formattedData
+        const sortedData = sortData(formattedData, dateValue);
+        const lastConcert = sortedData
           .map((e: string[][], i: number) => (i ? e[2][e[2].length - 1] : [0]))
           .reverse()
-          .find((d: string) => new Date() >= new Date(d));
-        const sortedData = sortData(formattedData, dateValue);
+          .find((d: string) => dayjs(dateValue) >= dayjs(d));
         const rates = createRateList(sortedData);
         setLastConcertDate(lastConcert);
         createEmployeeList(sortedData);

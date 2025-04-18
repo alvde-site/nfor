@@ -62,7 +62,7 @@ export function AnalyticsWidgetSummary({
       },
     },
     tooltip: {
-      y: { formatter: (value: number) => fNumber(value), title: { formatter: () => '' } },
+      y: { formatter: (value: number) => `${fNumber(value)}ч.`, title: { formatter: () => '' } },
     },
     ...chart.options,
   });
