@@ -1,7 +1,7 @@
 {
     "name": "НФОР - тромбоны",
     "short_name": "НФОР",
-    "start_url": ".",
+    "start_url": "/",
     "display": "standalone",
     "icons": [
         {
