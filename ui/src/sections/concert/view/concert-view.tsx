@@ -170,7 +170,7 @@ export function ConcertView({ formattedData }: any) {
           count={concertData.length - 1}
           rowsPerPage={table.rowsPerPage}
           onPageChange={table.onChangePage}
-          rowsPerPageOptions={[5, 10, 25, 50]}
+          rowsPerPageOptions={[5, 10, 25, 50, 100]}
           onRowsPerPageChange={table.onChangeRowsPerPage}
           labelDisplayedRows={table.defaultLabelDisplayedRows}
           labelRowsPerPage="Строк на стр.:"
@@ -197,7 +197,7 @@ export function useTable({ formattedData }: any) {
       .slice(1)
       .reverse()
       .findIndex((d: Dayjs) => dayjs().startOf('day') >= d);
-    const currentConcertIndex = Math.floor((localDataLength - 2 - lastConcert) / rowsPerPage);
+    const currentConcertIndex = Math.floor((localDataLength - 1 - lastConcert) / rowsPerPage);
     return currentConcertIndex >= 0 ? currentConcertIndex : 0;
   }, [formattedData, localDataLength, rowsPerPage]);
 
@@ -239,9 +239,14 @@ export function useTable({ formattedData }: any) {
     setPage(newPage);
   }, []);
 
-  const onSetDefaultPage = useCallback((newPage: number) => {
-    setPage(newPage);
-  }, []);
+  // const onSetDefaultPage = useCallback((newPage: number) => {
+  //   setPage(newPage);
+  // }, []);
+
+  const onSetDefaultPage = useCallback(() => {
+    const curConcert = getCurrentConcertIndex();
+    setPage(curConcert);
+  }, [getCurrentConcertIndex]);
 
   const defaultLabelDisplayedRows = useCallback(
     // ({ from, to, count }: any) => `${from}–${to} из ${count !== -1 ? count : `больше чем ${to}`}`,
@@ -256,6 +261,10 @@ export function useTable({ formattedData }: any) {
     },
     [onResetPage]
   );
+
+  useEffect(() => {
+    onSetDefaultPage();
+  }, [onSetDefaultPage, rowsPerPage]);
 
   //   import type { Dayjs } from 'dayjs';
 
