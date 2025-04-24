@@ -13,7 +13,7 @@ import ListItemText from '@mui/material/ListItemText';
 import { useState } from 'react';
 
 // import type { PostItemProps } from '../blog/post-item';
-import { Collapse, IconButton } from '@mui/material';
+import { Collapse, IconButton, LinearProgress } from '@mui/material';
 // import AnnouncementIcon from '@mui/icons-material/Announcement';
 
 import { useNavigate } from 'react-router-dom';
@@ -34,6 +34,7 @@ type Props = CardProps & {
   title?: string;
   subheader?: string;
   list: TConcertItemProps[];
+  datalength: number;
 };
 
 export function AnalyticsNews({ title, subheader, list, ...other }: Props) {
@@ -43,13 +44,15 @@ export function AnalyticsNews({ title, subheader, list, ...other }: Props) {
   };
   return (
     <Card {...other}>
-      <CardHeader title={title} subheader={subheader} sx={{ mb: 1 }} />
+      {other.datalength ? <CardHeader title={title} subheader={subheader} sx={{ mb: 1 }} /> : ''}
 
       <Scrollbar>
         <Box sx={{ minWidth: 744 }}>
-          {list.map((post) => (
-            <PostItem key={post.id} item={post} />
-          ))}
+          {other.datalength ? (
+            list.map((post) => <PostItem key={post.id} item={post} />)
+          ) : (
+            <LinearProgress sx={{ margin: '50px auto 0', width: '90%' }} />
+          )}
         </Box>
       </Scrollbar>
 

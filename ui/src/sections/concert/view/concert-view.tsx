@@ -8,6 +8,7 @@ import { useState, useEffect, useCallback } from 'react';
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import Table from '@mui/material/Table';
+import { LinearProgress } from '@mui/material';
 // import Button from '@mui/material/Button';
 import TableBody from '@mui/material/TableBody';
 import Typography from '@mui/material/Typography';
@@ -90,8 +91,9 @@ export function ConcertView({ formattedData }: any) {
         </Button> */}
       </Box>
 
-      <Card>
-        {/* <ConcertTableToolbar
+      {formattedData.length && !table.isLoading ? (
+        <Card>
+          {/* <ConcertTableToolbar
           numSelected={table.selected.length}
           filterName={filterName}
           onFilterName={(event: React.ChangeEvent<HTMLInputElement>) => {
@@ -100,82 +102,87 @@ export function ConcertView({ formattedData }: any) {
           }}
         /> */}
 
-        <Scrollbar>
-          <TableContainer sx={{ overflow: 'unset' }}>
-            <Table sx={{ minWidth: 800 }}>
-              <ConcertTableHead
-                // order={table.order}
-                // orderBy={table.orderBy}
-                // rowCount={_users.length}
-                // numSelected={table.selected.length}
-                // onSort={table.onSort}
-                // onSelectAllRows={(checked) =>
-                //   table.onSelectAllRows(
-                //     checked,
-                //     _users.map((user) => user.id)
-                //   )
-                // }
-                headLabel={[
-                  // { id: '' },
-                  { id: 'date', label: 'Дата' },
-                  { id: 'name', label: 'Название' },
-                  // { id: 'company', label: 'Company' },
-                  // { id: 'role', label: 'Role' },
-                  // { id: 'isVerified', label: 'Verified', align: 'center' },
-                  { id: 'status', label: 'Статус' },
-                ]}
-              />
-              <TableBody>
-                {/* {dataFiltered
+          <Scrollbar>
+            <TableContainer sx={{ overflow: 'unset' }}>
+              <Table sx={{ minWidth: 800 }}>
+                <ConcertTableHead
+                  // order={table.order}
+                  // orderBy={table.orderBy}
+                  // rowCount={_users.length}
+                  // numSelected={table.selected.length}
+                  // onSort={table.onSort}
+                  // onSelectAllRows={(checked) =>
+                  //   table.onSelectAllRows(
+                  //     checked,
+                  //     _users.map((user) => user.id)
+                  //   )
+                  // }
+                  headLabel={[
+                    // { id: '' },
+                    { id: 'date', label: 'Дата' },
+                    { id: 'name', label: 'Название' },
+                    // { id: 'company', label: 'Company' },
+                    // { id: 'role', label: 'Role' },
+                    // { id: 'isVerified', label: 'Verified', align: 'center' },
+                    { id: 'status', label: 'Статус' },
+                  ]}
+                />
+                {
+                  <TableBody>
+                    {/* {dataFiltered
                   .slice(
                     table.page * table.rowsPerPage,
                     table.page * table.rowsPerPage + table.rowsPerPage
                   )
                   .map((row) => ( */}
-                {/* <ConcertTableRow
+                    {/* <ConcertTableRow
                   key={row.id}
                   row={row}
                   selected={table.selected.includes(row.id)}
                   onSelectRow={() => table.onSelectRow(row.id)}
                 /> */}
-                {concertData
-                  .slice(1)
-                  .slice(
-                    table.page * table.rowsPerPage,
-                    table.page * table.rowsPerPage + table.rowsPerPage
-                  )
-                  .map((row) => (
-                    <ConcertTableRow
-                      key={row.id}
-                      row={row}
-                      // selected={table.selected.includes(row.id)}
-                      // onSelectRow={() => table.onSelectRow(row.id)}
+                    {concertData
+                      .slice(1)
+                      .slice(
+                        table.page * table.rowsPerPage,
+                        table.page * table.rowsPerPage + table.rowsPerPage
+                      )
+                      .map((row) => (
+                        <ConcertTableRow
+                          key={row.id}
+                          row={row}
+                          // selected={table.selected.includes(row.id)}
+                          // onSelectRow={() => table.onSelectRow(row.id)}
+                        />
+                      ))}
+
+                    <TableEmptyRows
+                      height={92}
+                      emptyRows={emptyRows(table.page, table.rowsPerPage, concertData.length - 1)}
                     />
-                  ))}
 
-                <TableEmptyRows
-                  height={92}
-                  emptyRows={emptyRows(table.page, table.rowsPerPage, concertData.length - 1)}
-                />
+                    {/* {notFound && <TableNoData searchQuery={filterName} />} */}
+                  </TableBody>
+                }
+              </Table>
+            </TableContainer>
+          </Scrollbar>
 
-                {/* {notFound && <TableNoData searchQuery={filterName} />} */}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        </Scrollbar>
-
-        <TablePagination
-          component="div"
-          page={table.page}
-          count={concertData.length - 1}
-          rowsPerPage={table.rowsPerPage}
-          onPageChange={table.onChangePage}
-          rowsPerPageOptions={[5, 10, 25, 50, 100]}
-          onRowsPerPageChange={table.onChangeRowsPerPage}
-          labelDisplayedRows={table.defaultLabelDisplayedRows}
-          labelRowsPerPage="Строк на стр.:"
-        />
-      </Card>
+          <TablePagination
+            component="div"
+            page={table.page}
+            count={concertData.length - 1}
+            rowsPerPage={table.rowsPerPage}
+            onPageChange={table.onChangePage}
+            rowsPerPageOptions={[5, 10, 25, 50, 100]}
+            onRowsPerPageChange={table.onChangeRowsPerPage}
+            labelDisplayedRows={table.defaultLabelDisplayedRows}
+            labelRowsPerPage="Строк на стр.:"
+          />
+        </Card>
+      ) : (
+        <LinearProgress sx={{ margin: '50px auto 0', width: '90%' }} />
+      )}
     </DashboardContent>
   );
 }
@@ -187,6 +194,7 @@ export function useTable({ formattedData }: any) {
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [selected, setSelected] = useState<string[]>([]);
   const [order, setOrder] = useState<'asc' | 'desc'>('asc');
+  const [isLoading, setIsLoading] = useState<boolean | undefined>(false);
 
   // const localData = JSON.parse(localStorage.getItem('initData')!);
   const localDataLength = formattedData.length - 1;
@@ -254,17 +262,16 @@ export function useTable({ formattedData }: any) {
     []
   );
 
-  const onChangeRowsPerPage = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      setRowsPerPage(parseInt(event.target.value, 10));
-      onResetPage();
-    },
-    [onResetPage]
-  );
+  const onChangeRowsPerPage = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setIsLoading(true);
+    // onResetPage();
+  }, []);
 
   useEffect(() => {
     onSetDefaultPage();
-  }, [onSetDefaultPage, rowsPerPage]);
+    setIsLoading(false);
+  }, [onSetDefaultPage, rowsPerPage, isLoading]);
 
   //   import type { Dayjs } from 'dayjs';
 
@@ -291,5 +298,6 @@ export function useTable({ formattedData }: any) {
     onChangeRowsPerPage,
     defaultLabelDisplayedRows,
     onSetDefaultPage,
+    isLoading,
   };
 }

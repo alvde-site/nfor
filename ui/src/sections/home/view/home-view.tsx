@@ -66,7 +66,7 @@ export function HomeView({ formattedData }: any) {
         const conList = createConcertList(formattedData);
 
         const featureConList = conList.filter(
-          (e) => dayjs(dayjs()).startOf('day') <= dayjs(e.concertDate[e.concertDate.length - 1])
+          (e) => dayjs().startOf('day') <= dayjs(e.concertDate[e.concertDate.length - 1])
         );
 
         setConcertList(featureConList);
@@ -251,6 +251,7 @@ export function HomeView({ formattedData }: any) {
                 : 'В этом сезоне больше нет концертов'
             }
             list={conсertList.slice(0, 10)}
+            datalength={formattedData.length}
           />
         </Grid>
 
