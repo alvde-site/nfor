@@ -49,7 +49,7 @@ export function createConcertList(sheetData: TInitDataItem[]) {
   return sheetData.map((e) => ({
     id: e[0],
     title: e[1],
-    coverUrl: `/assets/images/cover/cover-${Math.floor(1 + Math.random() * (30 - 1))}.webp`,
+    coverUrl: `/assets/images/cover/cover-${Math.floor(1 + Math.random() * (34 - 1))}.webp`,
     description: `Состав: ${handleEpmList(e).join(', ')}`,
     concertDate: e[2],
     rehearsalDate: e[3],
