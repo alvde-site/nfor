@@ -54,19 +54,6 @@ export function ConcertView({ formattedData }: any) {
   }, [formattedData]);
 
   // const [filterName, setFilterName] = useState('');
-  // const localData = JSON.parse(localStorage.getItem('initData')!);
-  // const localDataLength = localData.length - 1;
-  // const getCurrentConcert = useCallback(() => {
-  //   const lastConcert = localData
-  //     .map((e: string[][], i: number) => (i ? dayjs(e[2][e[2].length - 1]) : dayjs(0)))
-  //     .slice(1)
-  //     .reverse()
-  //     .findIndex((d: Dayjs) => dayjs('2025-06-11').startOf('day') >= d);
-  //   const currentConcertIdx = localDataLength - 2 - lastConcert;
-  //   table.onSetDefaultPage(Math.floor(currentConcertIdx / table.rowsPerPage));
-  // }, []);
-  // getCurrentConcert();
-  // const conData = createConcertList(loc.slice(1));
 
   // const dataFiltered: UserProps[] = applyFilter({
   //   inputData: _users,
@@ -196,7 +183,6 @@ export function useTable({ formattedData }: any) {
   const [order, setOrder] = useState<'asc' | 'desc'>('asc');
   const [isLoading, setIsLoading] = useState<boolean | undefined>(false);
 
-  // const localData = JSON.parse(localStorage.getItem('initData')!);
   const localDataLength = formattedData.length - 1;
 
   const getCurrentConcertIndex = useCallback(() => {
@@ -247,17 +233,12 @@ export function useTable({ formattedData }: any) {
     setPage(newPage);
   }, []);
 
-  // const onSetDefaultPage = useCallback((newPage: number) => {
-  //   setPage(newPage);
-  // }, []);
-
   const onSetDefaultPage = useCallback(() => {
     const curConcert = getCurrentConcertIndex();
     setPage(curConcert);
   }, [getCurrentConcertIndex]);
 
   const defaultLabelDisplayedRows = useCallback(
-    // ({ from, to, count }: any) => `${from}–${to} из ${count !== -1 ? count : `больше чем ${to}`}`,
     ({ from, to, count }: any) => (count !== -1 ? `${from}–${to} из ${count}` : 'Концертов нет'),
     []
   );
@@ -265,24 +246,12 @@ export function useTable({ formattedData }: any) {
   const onChangeRowsPerPage = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setIsLoading(true);
-    // onResetPage();
   }, []);
 
   useEffect(() => {
     onSetDefaultPage();
     setIsLoading(false);
   }, [onSetDefaultPage, rowsPerPage, isLoading]);
-
-  //   import type { Dayjs } from 'dayjs';
-
-  // import dayjs from 'dayjs';
-
-  // export function sortData(sData: any, curDate: Dayjs | null) {
-  //   const currentDate = curDate || dayjs();
-  //   return sData.filter((d: [][], i: number) =>
-  //     i ? currentDate >= dayjs(d[2][d[2].length - 1]) : d
-  //   );
-  // }
 
   return {
     page,

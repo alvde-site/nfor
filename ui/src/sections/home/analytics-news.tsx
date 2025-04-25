@@ -46,15 +46,17 @@ export function AnalyticsNews({ title, subheader, list, ...other }: Props) {
     <Card {...other}>
       {other.datalength ? <CardHeader title={title} subheader={subheader} sx={{ mb: 1 }} /> : ''}
 
-      <Scrollbar>
-        <Box sx={{ minWidth: 744 }}>
-          {other.datalength ? (
-            list.map((post) => <PostItem key={post.id} item={post} />)
-          ) : (
-            <LinearProgress sx={{ margin: '50px auto 0', width: '90%' }} />
-          )}
-        </Box>
-      </Scrollbar>
+      {other.datalength ? (
+        <Scrollbar>
+          <Box sx={{ minWidth: 744 }}>
+            {list.map((post) => (
+              <PostItem key={post.id} item={post} />
+            ))}
+          </Box>
+        </Scrollbar>
+      ) : (
+        <LinearProgress sx={{ margin: '50px auto 0', width: '90%' }} />
+      )}
 
       <Box sx={{ p: 2, textAlign: 'right' }}>
         <Button
