@@ -13,7 +13,7 @@ import ListItemText from '@mui/material/ListItemText';
 import { useState } from 'react';
 
 // import type { PostItemProps } from '../blog/post-item';
-import { Collapse, IconButton, LinearProgress } from '@mui/material';
+import { Collapse, IconButton, LinearProgress, Typography } from '@mui/material';
 // import AnnouncementIcon from '@mui/icons-material/Announcement';
 
 import { useNavigate } from 'react-router-dom';
@@ -136,9 +136,6 @@ function PostItem({ sx, item, ...other }: BoxProps & { item: Props['list'][numbe
             sx={{
               py: 2,
               px: 3,
-              gap: 2,
-              display: 'flex',
-              alignItems: 'center',
               fontStyle: 'italic',
               backgroundColor: (theme) =>
                 `${varAlpha(theme.vars.palette.info.lighterChannel, 0.48)}`,
@@ -147,7 +144,11 @@ function PostItem({ sx, item, ...other }: BoxProps & { item: Props['list'][numbe
             }}
             {...other}
           >
-            {item.comments}
+            {item.comments.split('///').map((c, i) => (
+              <Typography key={i} variant="body1">
+                {c}
+              </Typography>
+            ))}
           </Box>
         </Collapse>
       )}
