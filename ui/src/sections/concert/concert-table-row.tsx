@@ -123,9 +123,14 @@ export function ConcertTableRow({ row }: ConcertTableRowProps) {
                   <Typography variant="subtitle2" component="h5" sx={{ padding: '0 0 0 30px' }}>
                     Комментарий:
                   </Typography>
-                  <Typography variant="body1" sx={{ padding: '0 0 0 120px' }}>
-                    {row.comments}
-                  </Typography>
+                  <Box sx={{ padding: '0 0 0 120px' }}>
+                    {' '}
+                    {row.comments.split('///').map((c, i) => (
+                      <Typography key={i} variant="body1">
+                        {c}
+                      </Typography>
+                    ))}
+                  </Box>
                 </Box>
               )}
               {cleandeEmplDet.length && (
