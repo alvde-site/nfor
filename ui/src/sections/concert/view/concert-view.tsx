@@ -190,8 +190,8 @@ export function useTable({ formattedData }: any) {
       .map((e: string[][], i: number) => (i ? dayjs(e[2][e[2].length - 1]) : dayjs(0)))
       .slice(1)
       .reverse()
-      .findIndex((d: Dayjs) => dayjs().startOf('day') >= d);
-    const currentConcertIndex = Math.floor((localDataLength - 1 - lastConcert) / rowsPerPage);
+      .findIndex((d: Dayjs) => dayjs().startOf('day') > d);
+    const currentConcertIndex = Math.floor((localDataLength - lastConcert) / rowsPerPage);
     return currentConcertIndex >= 0 ? currentConcertIndex : 0;
   }, [formattedData, localDataLength, rowsPerPage]);
 
