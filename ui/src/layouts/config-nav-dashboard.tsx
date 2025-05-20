@@ -28,11 +28,11 @@ export const navData = [
   //   path: '/users',
   //   icon: icon('ic-users'),
   // },
-  // {
-  //   title: 'Sign in',
-  //   path: '/sign-in',
-  //   icon: icon('ic-lock'),
-  // },
+  {
+    title: 'Войти',
+    path: '/sign-in',
+    icon: icon('ic-lock'),
+  },
   // {
   //   title: 'Not found',
   //   path: '/404',
