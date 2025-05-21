@@ -1,8 +1,9 @@
+import { useForm } from 'react-hook-form';
 import { useState, useCallback } from 'react';
 
 import Box from '@mui/material/Box';
-import Link from '@mui/material/Link';
-import Divider from '@mui/material/Divider';
+// import Link from '@mui/material/Link';
+// import Divider from '@mui/material/Divider';
 import TextField from '@mui/material/TextField';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
@@ -13,27 +14,41 @@ import { useRouter } from 'src/routes/hooks';
 
 import { Iconify } from 'src/components/iconify';
 
+import { FormInputEmail } from './form-input-email';
+
 // ----------------------------------------------------------------------
+export type IFormInput = {
+  email: string;
+  password: string;
+};
+
+const defaultValues = {
+  email: '',
+  password: '',
+};
 
 export function SignInView() {
-  const router = useRouter();
+  const { control, handleSubmit } = useForm<IFormInput>({ defaultValues });
+  // const router = useRouter();
 
   const [showPassword, setShowPassword] = useState(false);
 
-  const handleSignIn = useCallback(() => {
-    router.push('/');
-  }, [router]);
+  const handleSignIn = useCallback((data: IFormInput) => {
+    console.log(data);
+    // router.push('/');
+  }, []);
 
   const renderForm = (
     <Box display="flex" flexDirection="column" alignItems="flex-end">
-      <TextField
+      <FormInputEmail name="email" label="Email" control={control} />
+      {/* <TextField
         fullWidth
         name="email"
         label="Email"
         defaultValue="hello@gmail.com"
         InputLabelProps={{ shrink: true }}
         sx={{ mb: 3 }}
-      />
+      /> */}
 
       {/* <Link variant="body2" color="inherit" sx={{ mb: 1.5 }}>
         Forgot password?
@@ -64,7 +79,7 @@ export function SignInView() {
         type="submit"
         color="inherit"
         variant="contained"
-        onClick={handleSignIn}
+        onClick={handleSubmit(handleSignIn)}
       >
         Войти
       </LoadingButton>
