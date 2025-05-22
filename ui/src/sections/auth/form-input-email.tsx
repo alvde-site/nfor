@@ -17,10 +17,18 @@ export function FormInputEmail({ name, control, label }: TFormInputEmail) {
     <Controller
       name={name}
       control={control}
+      rules={{
+        required: 'Требуется адрес электронной почты',
+        pattern: {
+          value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+          message: 'Неверный адрес электронной почты',
+        },
+      }}
       render={({ field: { onChange, value }, fieldState: { error }, formState }) => (
         <TextField
+          required
           type="email"
-          helperText={error ? error.message : null}
+          helperText={error?.message}
           error={!!error}
           onChange={onChange}
           value={value}
