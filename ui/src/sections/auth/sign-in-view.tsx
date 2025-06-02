@@ -35,6 +35,7 @@ export function SignInView() {
 
   const handleSignIn = useCallback((data: IFormInput) => {
     console.log(data);
+    console.log(import.meta.env.VITE_AUTH_LOGIN, import.meta.env.VITE_AUTH_PASSWORD);
     // router.push('/');
   }, []);
 
