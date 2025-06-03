@@ -7,7 +7,7 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import LoadingButton from '@mui/lab/LoadingButton';
 
-// import { useRouter } from 'src/routes/hooks';
+import { useRouter } from 'src/routes/hooks';
 
 import { FormInputEmail } from './form-input-email';
 import { FormInputPassword } from './form-input-password';
@@ -30,14 +30,29 @@ const defaultValues = {
 };
 
 export function SignInView() {
-  const { control, handleSubmit } = useForm<IFormInput>({ defaultValues });
-  // const router = useRouter();
+  const { control, handleSubmit, setError } = useForm<IFormInput>({ defaultValues });
+  const router = useRouter();
 
-  const handleSignIn = useCallback((data: IFormInput) => {
-    console.log(data);
-    console.log(import.meta.env.VITE_AUTH_LOGIN, import.meta.env.VITE_AUTH_PASSWORD);
-    // router.push('/');
-  }, []);
+  const handleSignIn = useCallback(
+    (data: IFormInput) => {
+      if (
+        data.email === import.meta.env.VITE_AUTH_LOGIN &&
+        data.password === import.meta.env.VITE_AUTH_PASSWORD
+      ) {
+        router.push('/');
+      } else {
+        setError('email', {
+          type: 'validation',
+          message: 'Неверный логин или пароль',
+        });
+        setError('password', {
+          type: 'validation',
+          message: 'Неверный логин или пароль',
+        });
+      }
+    },
+    [router, setError]
+  );
 
   const renderForm = (
     <Box display="flex" flexDirection="column" alignItems="flex-end">
