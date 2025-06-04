@@ -1,6 +1,6 @@
 import type { Theme, SxProps, Breakpoint } from '@mui/material/styles';
 
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 
 // import Box from '@mui/material/Box';
 import Alert from '@mui/material/Alert';
@@ -9,6 +9,8 @@ import { useTheme } from '@mui/material/styles';
 // import { _langs, _notifications } from 'src/_mock';
 
 // import { Iconify } from 'src/components/iconify';
+
+import { useCookies } from 'react-cookie';
 
 import { Main } from './main';
 import { layoutClasses } from '../classes';
@@ -34,11 +36,19 @@ export type DashboardLayoutProps = {
 };
 
 export function DashboardLayout({ sx, children, header }: DashboardLayoutProps) {
+  const [cookies] = useCookies(['isSignin']);
   const theme = useTheme();
 
   const [navOpen, setNavOpen] = useState(false);
 
   const layoutQuery: Breakpoint = 'lg';
+
+  const handleNavData = useCallback(() => {
+    if (cookies.isSignin) {
+      return navData.filter((e) => e.path !== '/sign-in');
+    }
+    return navData;
+  }, [cookies.isSignin]);
 
   return (
     <LayoutSection
@@ -71,7 +81,7 @@ export function DashboardLayout({ sx, children, header }: DashboardLayoutProps) 
                   }}
                 />
                 <NavMobile
-                  data={navData}
+                  data={handleNavData()}
                   open={navOpen}
                   onClose={() => setNavOpen(false)}
                   workspaces={_workspaces}
@@ -111,7 +121,7 @@ export function DashboardLayout({ sx, children, header }: DashboardLayoutProps) 
        * Sidebar
        *************************************** */
       sidebarSection={
-        <NavDesktop data={navData} layoutQuery={layoutQuery} workspaces={_workspaces} />
+        <NavDesktop data={handleNavData()} layoutQuery={layoutQuery} workspaces={_workspaces} />
       }
       /** **************************************
        * Footer

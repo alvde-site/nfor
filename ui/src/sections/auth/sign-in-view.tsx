@@ -1,6 +1,7 @@
 import type { Control } from 'react-hook-form';
 
 import { useCallback } from 'react';
+import { useCookies } from 'react-cookie';
 import { useForm } from 'react-hook-form';
 
 import Box from '@mui/material/Box';
@@ -30,6 +31,7 @@ const defaultValues = {
 };
 
 export function SignInView() {
+  const [, setCookie] = useCookies(['isSignin']);
   const { control, handleSubmit, setError } = useForm<IFormInput>({ defaultValues });
   const router = useRouter();
 
@@ -39,6 +41,7 @@ export function SignInView() {
         data.email === import.meta.env.VITE_AUTH_LOGIN &&
         data.password === import.meta.env.VITE_AUTH_PASSWORD
       ) {
+        setCookie('isSignin', true, { maxAge: 3600 * 24 * 3 });
         router.push('/');
       } else {
         setError('email', {
@@ -51,7 +54,7 @@ export function SignInView() {
         });
       }
     },
-    [router, setError]
+    [router, setCookie, setError]
   );
 
   const renderForm = (
