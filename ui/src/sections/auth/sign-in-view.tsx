@@ -1,6 +1,6 @@
 import type { Control } from 'react-hook-form';
 
-import { useCallback } from 'react';
+import { useCallback, useEffect } from 'react';
 import { useCookies } from 'react-cookie';
 import { useForm } from 'react-hook-form';
 
@@ -31,9 +31,15 @@ const defaultValues = {
 };
 
 export function SignInView() {
-  const [, setCookie] = useCookies(['isSignin']);
+  const [cookies, setCookie] = useCookies(['isSignin']);
   const { control, handleSubmit, setError } = useForm<IFormInput>({ defaultValues });
   const router = useRouter();
+
+  useEffect(() => {
+    if (cookies.isSignin) {
+      router.push('/');
+    }
+  }, [cookies.isSignin, router]);
 
   const handleSignIn = useCallback(
     (data: IFormInput) => {
@@ -42,7 +48,6 @@ export function SignInView() {
         data.password === import.meta.env.VITE_AUTH_PASSWORD
       ) {
         setCookie('isSignin', true, { maxAge: 3600 * 24 * 3 });
-        router.push('/');
       } else {
         setError('email', {
           type: 'validation',
@@ -54,7 +59,7 @@ export function SignInView() {
         });
       }
     },
-    [router, setCookie, setError]
+    [setCookie, setError]
   );
 
   const renderForm = (
