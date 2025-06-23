@@ -1,5 +1,6 @@
 import type { IconButtonProps } from '@mui/material/IconButton';
 
+import { useCookies } from 'react-cookie';
 import { useState, useCallback } from 'react';
 
 import Box from '@mui/material/Box';
@@ -29,6 +30,7 @@ export type AccountPopoverProps = IconButtonProps & {
 
 export function AccountPopover({ data = [], sx, ...other }: AccountPopoverProps) {
   const router = useRouter();
+  const [cookies] = useCookies(['isSignin']);
 
   const pathname = usePathname();
 
@@ -83,11 +85,11 @@ export function AccountPopover({ data = [], sx, ...other }: AccountPopoverProps)
       >
         <Box sx={{ p: 2, pb: 1.5 }}>
           <Typography variant="subtitle2" noWrap>
-            {_myAccount?.displayName}
+            {cookies.isSignin ? 'Администратор' : _myAccount?.displayName}
           </Typography>
 
           <Typography variant="body2" sx={{ color: 'text.secondary' }} noWrap>
-            {_myAccount?.email}
+            {cookies.isSignin ? import.meta.env.VITE_AUTH_LOGIN : _myAccount?.email}
           </Typography>
         </Box>
 
@@ -130,7 +132,7 @@ export function AccountPopover({ data = [], sx, ...other }: AccountPopoverProps)
 
         <Box sx={{ p: 1 }}>
           <Button fullWidth color="error" size="medium" variant="text">
-            Logout
+            Выйти
           </Button>
         </Box>
       </Popover>
