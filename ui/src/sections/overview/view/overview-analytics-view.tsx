@@ -76,7 +76,9 @@ type TRates = [string[], number[], number[], number[]];
 export function OverviewAnalyticsView({ formattedData }: any) {
   const [employeeList, setEmployeeList] = useState<TEmplList>({});
   const [lastConcertDate, setLastConcertDate] = useState('');
-  const [dateValue, setDateValue] = useState<Dayjs | null>(dayjs());
+  const [dateValue, setDateValue] = useState<Dayjs | null>(
+    !dayjs().isBefore(dayjs('2025-09-14')) ? dayjs() : dayjs('2025-09-14')
+  );
   const [monthsRates, setMonthsRates] = useState<TRates>([[], [], [], []]);
 
   useEffect(() => {
@@ -213,7 +215,7 @@ export function OverviewAnalyticsView({ formattedData }: any) {
               }
               total={u in employeeList ? (employeeList[u].total as number) : 0}
               currentDay={dateValue}
-              startSeason="2024-08-15"
+              startSeason="2025-08-15"
               color={fPercentToColor(
                 u in employeeList ? (employeeList[u].maxTotal as number) : 1,
                 u in employeeList ? (employeeList[u].total as number) : 0,

@@ -61,7 +61,7 @@ export function formatTextDate(date: string) {
     'декабря',
   ];
   return months[curDate.getMonth()]
-    ? `Вызовы рассчитываются на период с 1 ${months[8]} 2024 года по ${curDate.getDate()} ${months[curDate.getMonth()]} ${curDate.getFullYear()} года (дата последнего концерта).`
+    ? `Вызовы рассчитываются на период с 12 ${months[8]} 2025 года по ${curDate.getDate()} ${months[curDate.getMonth()]} ${curDate.getFullYear()} года (дата последнего концерта).`
     : '';
 }
 
