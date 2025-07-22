@@ -30,7 +30,7 @@ export type AccountPopoverProps = IconButtonProps & {
 
 export function AccountPopover({ data = [], sx, ...other }: AccountPopoverProps) {
   const router = useRouter();
-  const [cookies] = useCookies(['isSignin']);
+  const [cookies, setCookie] = useCookies(['isSignin']);
 
   const pathname = usePathname();
 
@@ -43,6 +43,10 @@ export function AccountPopover({ data = [], sx, ...other }: AccountPopoverProps)
   const handleClosePopover = useCallback(() => {
     setOpenPopover(null);
   }, []);
+
+  const handleSignout = useCallback(() => {
+    setCookie('isSignin', false, { maxAge: 3600 * 24 * 3 });
+  }, [setCookie]);
 
   const handleClickItem = useCallback(
     (path: string) => {
@@ -131,7 +135,7 @@ export function AccountPopover({ data = [], sx, ...other }: AccountPopoverProps)
         <Divider sx={{ borderStyle: 'dashed' }} />
 
         <Box sx={{ p: 1 }}>
-          <Button fullWidth color="error" size="medium" variant="text">
+          <Button fullWidth color="error" size="medium" variant="text" onClick={handleSignout}>
             Выйти
           </Button>
         </Box>
