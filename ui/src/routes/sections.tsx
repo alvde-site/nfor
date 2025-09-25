@@ -80,11 +80,11 @@ export function Router() {
       ),
       children: [
         { element: <HomePage data={data} />, index: true },
-        { path: 'user', element: <UserPage /> },
+        // { path: 'user', element: <UserPage /> },
         { path: 'concert', element: <ConcertPage data={data} /> },
         { path: 'analitics', element: <AnaliticsPage data={data} /> },
-        { path: 'products', element: <ProductsPage /> },
-        { path: 'blog', element: <BlogPage /> },
+        // { path: 'products', element: <ProductsPage /> },
+        // { path: 'blog', element: <BlogPage /> },
       ],
     },
     {
