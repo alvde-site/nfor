@@ -273,7 +273,7 @@ export function OverviewAnalyticsView({ formattedData }: any) {
 
         <Grid xs={12}>
           <AnalyticsConversionRates
-            title="Сезон 2024-2025"
+            title="Сезон 2025-2026"
             subheader={`Концерты - ${getArraySum(monthsRates[1])}. Репетиции - ${getArraySum(monthsRates[2])}. Всего - ${getArraySum(monthsRates[3])}.`}
             chart={{
               categories: monthsRates[0],
