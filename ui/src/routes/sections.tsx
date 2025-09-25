@@ -39,7 +39,7 @@ const renderFallback = (
 );
 
 export function Router() {
-  const [cookies, setCookie] = useCookies(['isSubmit']);
+  const [cookies, setCookie] = useCookies(['isSubmit', 'isSignin']);
   // const data = useRef([]);
   const [data, setData] = useState([]);
   const handleCookie = useCallback(() => {
@@ -71,12 +71,15 @@ export function Router() {
   }, []);
   return useRoutes([
     {
-      element: (
+      path: '/',
+      element: cookies.isSignin ? (
         <DashboardLayout>
           <Suspense fallback={renderFallback}>
             <Outlet />
           </Suspense>
         </DashboardLayout>
+      ) : (
+        <Navigate to="sign-in" />
       ),
       children: [
         { element: <HomePage data={data} />, index: true },
