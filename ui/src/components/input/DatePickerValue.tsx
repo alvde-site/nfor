@@ -32,8 +32,8 @@ export default function DatePickerValue({
           slotProps={{
             toolbar: { hidden: true },
           }}
-          minDate={dayjs('2024-09-14')}
-          maxDate={dayjs('2025-07-31')}
+          minDate={dayjs('2025-09-14')}
+          maxDate={dayjs('2026-07-31')}
         />
       </DemoContainer>
     </LocalizationProvider>
