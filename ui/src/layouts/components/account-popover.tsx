@@ -45,7 +45,7 @@ export function AccountPopover({ data = [], sx, ...other }: AccountPopoverProps)
   }, []);
 
   const handleSignout = useCallback(() => {
-    setCookie('isSignin', false, { maxAge: 3600 * 24 * 3 });
+    setCookie('isSignin', false, { maxAge: 3600 * 24 * 366 });
   }, [setCookie]);
 
   const handleClickItem = useCallback(

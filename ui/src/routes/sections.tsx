@@ -43,7 +43,7 @@ export function Router() {
   // const data = useRef([]);
   const [data, setData] = useState([]);
   const handleCookie = useCallback(() => {
-    setCookie('isSubmit', true, { maxAge: 3600 * 24 * 3 });
+    setCookie('isSubmit', true, { maxAge: 3600 * 24 });
     localStorage.removeItem('initData');
   }, [setCookie]);
   useEffect(() => {

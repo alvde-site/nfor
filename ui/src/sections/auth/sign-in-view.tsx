@@ -47,7 +47,7 @@ export function SignInView() {
         data.email === import.meta.env.VITE_AUTH_LOGIN &&
         data.password === import.meta.env.VITE_AUTH_PASSWORD
       ) {
-        setCookie('isSignin', true, { maxAge: 3600 * 24 * 3 });
+        setCookie('isSignin', true, { maxAge: 3600 * 24 * 366 });
       } else {
         setError('email', {
           type: 'validation',
