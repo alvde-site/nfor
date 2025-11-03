@@ -50,6 +50,7 @@ export function AnalyticsConversionRates({ title, subheader, chart, ...other }: 
       enabled: true,
       offsetX: -6,
       style: { fontSize: '10px', colors: ['#FFFFFF', theme.palette.text.primary] },
+      formatter: (val) => val === 0?'':val.toString(),
     },
     legend: { show: true },
     plotOptions: {

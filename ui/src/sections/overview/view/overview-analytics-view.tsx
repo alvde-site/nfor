@@ -136,7 +136,6 @@ export function OverviewAnalyticsView({ formattedData }: any) {
       userKeys.forEach((u) => {
         (empList as TEmplList)[u].maxTotal = maxTotal;
       });
-      console.log(totalArr, maxTotal, empList);
       setEmployeeList(empList);
     }
     // end circl data
@@ -151,23 +150,27 @@ export function OverviewAnalyticsView({ formattedData }: any) {
 
       for (let i = 9; i <= 12; i += 1) {
         if (
-          Object.prototype.hasOwnProperty.call(conDatesCount, i) &&
+          Object.prototype.hasOwnProperty.call(conDatesCount, i) ||
           Object.prototype.hasOwnProperty.call(rehDatesCount, i)
         ) {
+          const con = conDatesCount[`${i}`] || 0;
+          const reh = rehDatesCount[`${i}`] || 0;
           rates[0].push(months[`${i}`]);
-          rates[1].push(conDatesCount[`${i}`]);
-          rates[2].push(rehDatesCount[`${i}`]);
+          rates[1].push(con);
+          rates[2].push(reh);
         }
       }
 
       for (let i = 1; i <= 8; i += 1) {
         if (
-          Object.prototype.hasOwnProperty.call(conDatesCount, i) &&
+          Object.prototype.hasOwnProperty.call(conDatesCount, i) ||
           Object.prototype.hasOwnProperty.call(rehDatesCount, i)
         ) {
+          const con = conDatesCount[`${i}`] || 0;
+          const reh = rehDatesCount[`${i}`] || 0;
           rates[0].push(months[`${i}`]);
-          rates[1].push(conDatesCount[`${i}`]);
-          rates[2].push(rehDatesCount[`${i}`]);
+          rates[1].push(con);
+          rates[2].push(reh);
         }
       }
 
