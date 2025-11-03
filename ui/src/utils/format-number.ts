@@ -69,6 +69,7 @@ export function fPercent(inputValue: InputNumberValue, options?: Options) {
 }
 
 export function countPercent(inputValue: InputNumberValue, totalInputValue: InputNumberValue) {
+  console.log(inputValue, totalInputValue);
   return Math.round(((inputValue as number) / (totalInputValue as number)) * 100);
 }
 

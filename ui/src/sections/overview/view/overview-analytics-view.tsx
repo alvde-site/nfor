@@ -131,10 +131,12 @@ export function OverviewAnalyticsView({ formattedData }: any) {
       });
 
       const totalArr = userKeys.map((u) => (empList as TEmplList)[u].total);
+
       const maxTotal = getMaxOfArray(totalArr as number[]);
       userKeys.forEach((u) => {
         (empList as TEmplList)[u].maxTotal = maxTotal;
       });
+      console.log(totalArr, maxTotal, empList);
       setEmployeeList(empList);
     }
     // end circl data
@@ -210,7 +212,10 @@ export function OverviewAnalyticsView({ formattedData }: any) {
               title={users[i]}
               percent={
                 u in employeeList
-                  ? countPercent(employeeList[u].total as number, getArraySum(monthsRates[3]))
+                  ? countPercent(
+                      employeeList[u].total as number,
+                      employeeList[u].maxTotal as number
+                    )
                   : 0
               }
               total={u in employeeList ? (employeeList[u].total as number) : 0}
