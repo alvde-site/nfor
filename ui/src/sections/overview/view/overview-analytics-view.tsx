@@ -177,7 +177,7 @@ export function OverviewAnalyticsView({ formattedData }: any) {
       for (let i = 0; i < rates[0].length; i += 1) {
         rates[3].push(rates[1][i] + rates[2][i]);
       }
-
+      console.log(rates);
       return rates;
     }
 
@@ -215,10 +215,7 @@ export function OverviewAnalyticsView({ formattedData }: any) {
               title={users[i]}
               percent={
                 u in employeeList
-                  ? countPercent(
-                      employeeList[u].total as number,
-                      employeeList[u].maxTotal as number
-                    )
+                  ? countPercent(employeeList[u].total as number, getArraySum(monthsRates[3]))
                   : 0
               }
               total={u in employeeList ? (employeeList[u].total as number) : 0}
